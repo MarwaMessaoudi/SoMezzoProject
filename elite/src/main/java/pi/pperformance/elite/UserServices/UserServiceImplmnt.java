@@ -3,9 +3,7 @@ package pi.pperformance.elite.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pi.pperformance.elite.UserRepository.UserRepository;
-import pi.pperformance.elite.UserServices.UserServiceInterface;
 import pi.pperformance.elite.entities.User;
-import java.util.List;
 
 //the sevice class where we're going to develop the functions from the interface
 @Service

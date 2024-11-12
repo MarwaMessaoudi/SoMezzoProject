@@ -1,8 +1,6 @@
 package pi.pperformance.elite.UserServices;
 
-import pi.pperformance.elite.UserRepository.UserRepository;
 import pi.pperformance.elite.entities.User;
-import java.util.List;
 
 //the service interface where we're going to declare the function we'll use in both the controller and the service class
 public interface UserServiceInterface{
