@@ -1,0 +1,13 @@
+target/
+*.class
+*.jar
+
+__pycache__/
+*.py[cod]
+venv/
+
+node_modules/
+.env
+dist/
+
+SoMezzoProject\elite\src\main\resources\application.properties
