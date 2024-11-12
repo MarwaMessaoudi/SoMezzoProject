@@ -1,0 +1,8 @@
+<resources>
+    <string-array name="roleSpinner">
+        <item>Employee</item>
+        <item>Controller</item>
+    </string-array>
+
+
+</resources>
