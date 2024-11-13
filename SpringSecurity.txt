@@ -1,0 +1,13 @@
+The JwtRequestFilter class in your Spring Security setup is a custom filter that performs the following main tasks:
+Summary:
+The JwtRequestFilter class is responsible for:
+Extracting the JWT from the request header.
+Validating the JWT to ensure it’s legitimate.
+Authenticating the user by loading their details and setting the authentication in the Spring Security context.
+Allowing the request to proceed with the authenticated user if the token is valid.
+This enables stateless authentication based on JWT, where no session is required. The user's identity is validated through the token, and the request proceeds with the appropriate authorization.
+------------------------------------------------------------------------------
+The class JwtUtils is designed to handle the creation, extraction, and validation of JWT tokens.
+It allows the extraction of claims (like the subject/email and expiration date) from the token.
+It provides functionality to generate new tokens with an expiration time (defaulting to 10 hours) and ensures tokens are valid by checking both the email and expiration.
+
