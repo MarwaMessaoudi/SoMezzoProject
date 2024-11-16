@@ -24,19 +24,21 @@ private String email;
 private Date birthDate;
 private String role;
 private String password;
+private boolean isActive;  
 //to avoid adding this attribute to the database
 @Transient
 private String confirm_password;
 
 
 //the enttity constructor
-public User(String FN, String LN, String mail, String role, String pwd){
+public User(String FN, String LN, String mail, String role, String pwd,Boolean Active){
     this.first_name=FN;
     this.last_name=LN;
     this.email=mail;
     this.role=role;
     this.password = pwd;
     this.birthDate = new Date();
+    this.isActive=false;
 }
 public void setId(Long id) {
     this.id = id;
@@ -87,5 +89,15 @@ public String getConfirm_password() {
     return confirm_password;
 }
 
-    
+public void setIsActive(Boolean isactive) {
+    this.isActive = isActive;
+}
+
+
+public boolean getIsActive() {
+    return isActive;
+}
+
+public User() {
+}  
 }
