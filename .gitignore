@@ -11,3 +11,5 @@ node_modules/
 dist/
 
 SoMezzoProject\elite\src\main\resources\application.properties
+
+.vscode/

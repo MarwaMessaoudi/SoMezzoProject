@@ -74,6 +74,23 @@ html,
   text-align: right;
 }
 
+form input[type="checkbox"] {
+  -webkit-appearance: checkbox;
+  -moz-appearance: checkbox;
+       appearance: checkbox;
+       display: inline-block;
+      width: auto;
+}
+form label{
+  align-items: baseline;
+  color: #666;
+  font-size: .875rem;
+  display: contents;
+}
+
+
+
+
 .forgotpassword button {
   background: none;
   border: none;

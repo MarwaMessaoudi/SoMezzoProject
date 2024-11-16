@@ -1,9 +1,4 @@
 package pi.pperformance.elite.UserServices;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.stereotype.Service;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
 import pi.pperformance.elite.entities.User;
 
 

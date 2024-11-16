@@ -13,8 +13,7 @@ import java.util.function.Function;
 @Component
 /*Marks this class as a Spring component,
 so it can be automatically detected and managed by the Spring container.
- This allows it to be injected into other classes where needed.*/
-
+This allows it to be injected into other classes where needed.*/
 public class JwtUtils {
 
     /* Generate a strong secret key for HS256
