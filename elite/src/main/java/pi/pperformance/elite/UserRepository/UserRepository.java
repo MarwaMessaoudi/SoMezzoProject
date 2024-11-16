@@ -8,5 +8,7 @@ import pi.pperformance.elite.entities.User;
 @Repository
 //please make sure to name the entity "User" so the code recognize it and most of the red underlined User will be gone
 public interface UserRepository extends JpaRepository<User, Long> {
+    User findByEmail(String email);
+
 
 }
