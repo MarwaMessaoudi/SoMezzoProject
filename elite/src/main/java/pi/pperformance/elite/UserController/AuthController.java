@@ -28,6 +28,7 @@ public class AuthController {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
         String email = loginRequest.get("email");
