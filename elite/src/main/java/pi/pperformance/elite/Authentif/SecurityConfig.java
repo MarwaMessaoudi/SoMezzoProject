@@ -30,7 +30,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
             .authorizeRequests()
-                .requestMatchers("/auth/login").permitAll() // Permit login request without authentication
+                .requestMatchers("/auth/login", "/auth/refresh").permitAll() // Permit login request without authentication
                 .requestMatchers("/Users/add").permitAll() // Permit add request without authentication
                 .anyRequest().authenticated() // Authenticate all other requests
             .and()
