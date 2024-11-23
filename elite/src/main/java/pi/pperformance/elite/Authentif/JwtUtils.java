@@ -58,7 +58,7 @@ public class JwtUtils {
                 .compact();
     }
 
-     // Check if the token has expired
+    // Check if the token has expired
      private Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }

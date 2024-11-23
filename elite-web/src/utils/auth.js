@@ -12,4 +12,3 @@ export const isTokenExpired = (token) => {
       return true; // Treat invalid tokens as expired
     }
   };
-  
