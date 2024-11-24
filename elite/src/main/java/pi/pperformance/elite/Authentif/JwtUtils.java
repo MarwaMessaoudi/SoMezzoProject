@@ -7,6 +7,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
 import javax.crypto.SecretKey;
+
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.function.Function;
 
@@ -17,8 +19,17 @@ This allows it to be injected into other classes where needed.*/
 public class JwtUtils {
     /* Generate a strong secret key for HS256
      * It’s a method to mix the secret key with the data inside the token to create a secure signature. This signature is then used to ensure the token hasn’t been changed by anyone else.*/
-    private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256); // Ensure strong 256-bit key
-
+    private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256); // Ensure a strong dynamic 256-bit key for the access token
+    private static final String JWT_SECRET = System.getenv("JWT_SECRET"); //generated static secret key for the refresh Token, stored in the envirement variables of the local machine 
+    private static final SecretKey SECRET_KEY1;
+    //a control to check if the key is correctly set on the local machine
+    static {
+        if (JWT_SECRET == null || JWT_SECRET.isEmpty()) {
+            throw new IllegalStateException("Environment variable JWT_SECRET is not set or empty");
+        }
+        SECRET_KEY1 = Keys.hmacShaKeyFor(JWT_SECRET.getBytes(StandardCharsets.UTF_8));
+    }
+    
     // Extract a claim from the token
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
@@ -43,7 +54,7 @@ public class JwtUtils {
         return Jwts.builder()
                 .setSubject(email)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10)) // 10 hours validity
+                .setExpiration(new Date(System.currentTimeMillis() + 60 * 1000)) // 10 hours validity
                 .signWith(SECRET_KEY)
                 .compact();
     }

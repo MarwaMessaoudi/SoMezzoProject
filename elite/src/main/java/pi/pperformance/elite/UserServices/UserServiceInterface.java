@@ -6,6 +6,6 @@ import pi.pperformance.elite.entities.User;
 public interface UserServiceInterface{
 //please make sure to name the entity "User" so the code recognize it and most of the red underlined User will be gone
     public User addUser(User user);
-
+    public User findByEmail(String email);
 
 }

@@ -23,4 +23,8 @@ public class UserServiceImplmnt implements UserServiceInterface {
 
         return UsrRepo.save(user);
     }
+
+    public User findByEmail(String email) {
+        return UsrRepo.findByEmail(email);
+    }
 }
