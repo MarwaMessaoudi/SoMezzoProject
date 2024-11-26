@@ -177,29 +177,7 @@
   gap: 1.5rem;
 }
 
-.tile {
-  background: var(--c-white);
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
 
-.tile:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
-  border: 1px solid var(--c-blue-500);
-}
-
-.tile-header i {
-  font-size: 1.5rem;
-  margin-right: 1rem;
-  color: var(--c-orange-500);
-}
 .performance-section {
   margin-top: 30px;
   font-family: 'Arial', sans-serif;
@@ -302,17 +280,49 @@
 }
 
 
+.tile {
+  background: linear-gradient(135deg, var(--c-blue-500), var(--c-green-500)); /* Dynamic gradient */
+  color: var(--c-white); /* Text color */
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow for depth */
+  transition: transform 0.3s, box-shadow 0.3s, background 0.3s;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 2px solid transparent; /* Border for hover effect */
+}
+
+.tile:hover {
+  transform: translateY(-10px); /* Lift effect */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Stronger shadow on hover */
+  background: linear-gradient(135deg, var(--c-olive-500), var(--c-orange-500)); /* Change gradient on hover */
+  border-color: var(--c-blue-900); /* Add border color on hover */
+}
+
+.tile-header i {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--c-orange-500); /* Icon color */
+}
+
+.tile-header h3 {
+  font-size: 1.25rem;
+  margin: 0;
+}
+
 .tile a {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  color: var(--c-blue-500);
+  color: var(--c-white); /* Link color */
   text-decoration: none;
-  font-size: 0.875rem;
+  font-weight: bold;
 }
 
 .tile a:hover {
-  color: var(--c-orange-500);
+  color: var(--c-gray-100); /* Lighter color on hover */
+  text-decoration: underline; /* Highlight hover state */
 }
 
 .service-section-footer {
@@ -320,4 +330,3 @@
   font-size: 0.875rem;
   color: var(--c-gray-600);
 }
-

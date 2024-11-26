@@ -7,6 +7,18 @@ import ResetPass from "./login/ResetPass";
 import React, { useState, useEffect } from 'react';
 import LoginPage from './LoginPage';
 import EmployeeInterface from './Interface/Employee/employeeInterface';
+import UpdateEmp from './Interface/Employee/UpdateEmp';
+import ManagerInterface from "./Interface/Manager/managerInterface"; 
+import ProfilePage from "./Interface/Manager/users-profile"; 
+import UserTable from "./Interface/Manager/supprission_page"; 
+
+import UserList from "./Interface/Manager/supprission_page";
+import EditUserForm from "./Interface/Manager/EditUserForm";
+
+
+
+
+
 const INACTIVITY_TIMEOUT = 1 * 60 * 1000; // 10 minutes
 
 function App() {
@@ -50,7 +62,17 @@ function App() {
         <Route path="/sign-in" element={<Login />} />
         <Route path="/resetpassword" element={<ResetPass />} />
         <Route path="/employeeinterface" element={<EmployeeInterface />} /> 
+        <Route path="/UpdateEmp" element={<UpdateEmp />} />
 
+
+        <Route path="/ManagerInterface" element={<ManagerInterface />} />
+
+      <Route path="/users-profile" element={<ProfilePage />} />
+      <Route path="/UserTable" element={<UserTable />} />       /* supprission*/
+
+
+      <Route path="/users" element={<UserList />} />    /* modification*/
+      <Route path="/edit-user/:id" element={<EditUserForm />} /> /*formulaire_modification*/
       </Routes>
     </Router>
   );

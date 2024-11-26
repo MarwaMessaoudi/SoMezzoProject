@@ -10,6 +10,8 @@ const EditUserForm = () => {
         first_name: "",
         last_name: "",
         email: "",
+        role: "",
+        isActive: false,
     });
 
     // Charger les informations de l'utilisateur depuis l'API
@@ -73,7 +75,25 @@ const EditUserForm = () => {
                         required
                     />
                 </div>
-                
+                <div>
+                    <label>Role:</label>
+                    <input
+                        type="text"
+                        name="role"
+                        value={formData.role}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+                <div>
+                    <label>Actif:</label>
+                    <input
+                        type="checkbox"
+                        name="isActive"
+                        checked={formData.isActive}
+                        onChange={handleChange}
+                    />
+                </div>
                 <button type="submit">Save
                 </button>
                 <button type="button" onClick={() => navigate("/users")}>Cancel</button>

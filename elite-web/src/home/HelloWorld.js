@@ -1,8 +1,14 @@
-// Home.js
 import React from "react";
-import "./home.css"; // Ensure the file name matches the casing exactly
+import { useNavigate } from "react-router-dom"; // Import useNavigate
+import "./home.css";
 
 function Homepage() {
+  const navigate = useNavigate(); // Initialize the navigate function
+
+  const handleGetStarted = () => {
+    navigate("/sign-in "); // Navigate to the login route
+  };
+
   return (
     <div className="homepage">
       <header className="homepage-header">
@@ -25,7 +31,9 @@ function Homepage() {
         <section className="hero">
           <h1>Welcome to SoMezzo Employee Portal</h1>
           <p>Streamline your tasks and enhance productivity with our centralized tools and dashboards.</p>
-          <button className="cta-button">Get Started</button>
+          <button className="cta-button" onClick={handleGetStarted}>
+            Get Started
+          </button>
         </section>
 
         <section id="dashboard" className="dashboard-section">
