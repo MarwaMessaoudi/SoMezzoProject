@@ -12,12 +12,14 @@ import jakarta.persistence.Transient;
 
 import java.util.Collection;
 //instead of this importation for the date attribute, I used this so the database can store it from the JSON file: import java.sql.Date; 
-import java.util.Date;
+import java.util.Date; 
+import java.time.LocalDate;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails; 
+
 
 
 
@@ -30,6 +32,8 @@ private Long id;
 private String first_name;
 private String last_name;
 private String email;
+private LocalDate birthDate;
+private String password;
 private Date birthDate;
 
 @Enumerated(EnumType.STRING)
@@ -37,9 +41,13 @@ private Role role;
 
 private String password;
 private boolean isActive; 
+
 //to avoid adding this attribute to the database
 @Transient
 private String confirm_password;
+
+public User() {
+}
 
 
 //the enttity constructor
@@ -49,8 +57,9 @@ public User(String FN, String LN, String mail, Role role, String pwd,Boolean Act
     this.email=mail;
     this.role=role;
     this.password = pwd;
-    this.birthDate = new Date();
+    this.birthDate = LocalDate.now();// je change le type en localdate pour la Compatibilité avec JSON et la base de données
     this.isActive=false;
+  // j'ajouter le dependence de date pour fait la conversion de date en json au moment de tstse dans postman
 }
 public void setId(Long id) {
     this.id = id;
@@ -64,7 +73,7 @@ public void setLast_name(String last_name) {
 public void setEmail(String email) {
     this.email = email;
 }
-public void setBirthDate(Date birthDate) {
+public void setBirthDate(LocalDate birthDate) {
     this.birthDate = birthDate;
 }
 public void setRole(Role role) {
@@ -88,7 +97,7 @@ public String getLast_name() {
 public String getEmail() {
     return email;
 }
-public Date getBirthDate() {
+public LocalDate getBirthDate() {
     return birthDate;
 }
 public Role getRole() {
@@ -108,9 +117,6 @@ public void setIsActive(Boolean isactive) {
 
 public boolean getIsActive() {
     return isActive;
-}
-
-public User() {
 }  
 
 @Override
