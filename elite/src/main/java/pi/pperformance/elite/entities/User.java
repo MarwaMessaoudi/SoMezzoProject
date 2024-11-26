@@ -14,7 +14,6 @@ import java.util.Collection;
 //instead of this importation for the date attribute, I used this so the database can store it from the JSON file: import java.sql.Date; 
 import java.util.Date;
 import java.util.List;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails; 
@@ -121,8 +120,6 @@ public User() {
     public String getUsername() {
         return email;  // Treat email as the username for authentication
     }
-
-  
 
     @Override
     public boolean isAccountNonExpired() {

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./login.module.css";
-import apiClient from "../utils/apiClient"; // Utiliser le client API centralisé
+import apiClient from "../utils/apiClient"; // Utilisation du client API centralisé
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -16,6 +16,7 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
 
+    // Validation d'entrée
     if (!email || !password) {
       setLoginMessage("Please insert your email and password");
       setLoading(false);
@@ -29,6 +30,7 @@ const Login = () => {
       if (isActive) {
         setLoginMessage("Login successful!");
 
+        // Enregistrement des tokens
         if (rememberMe) {
           localStorage.setItem("accessToken", accessToken);
           localStorage.setItem("refreshToken", refreshToken);
@@ -37,7 +39,11 @@ const Login = () => {
           sessionStorage.setItem("refreshToken", refreshToken);
         }
 
+<<<<<<< HEAD
         navigate("/ManagerInterface");
+=======
+        navigate("/dashboard"); // Redirection vers le tableau de bord
+>>>>>>> f7ba0fb2a3383d67e97b83bd3ed772a2fdbd0872
       } else {
         setLoginMessage("Account not approved");
       }
@@ -66,10 +72,11 @@ const Login = () => {
                 type="email"
                 className={styles.formcontrol}
                 placeholder="Enter email"
+                required
               />
             </div>
 
-            <div className={styles.mb3}>
+            <div className="mb-3">
               <label>Password</label>
               <input
                 value={password}
@@ -77,6 +84,7 @@ const Login = () => {
                 type="password"
                 className={styles.formcontrol}
                 placeholder="Enter password"
+                required
               />
             </div>
 
@@ -97,7 +105,16 @@ const Login = () => {
               </button>
             </div>
 
-            {loginMessage && <p>{loginMessage}</p>}
+            {/* Affichage du message de login */}
+            {loginMessage && (
+              <p
+                style={{
+                  color: loginMessage === "Login successful!" ? "green" : "red",
+                }}
+              >
+                {loginMessage}
+              </p>
+            )}
 
             <p className={styles.forgotpassword}>
               Forgot <Link to="/resetpassword">password?</Link>

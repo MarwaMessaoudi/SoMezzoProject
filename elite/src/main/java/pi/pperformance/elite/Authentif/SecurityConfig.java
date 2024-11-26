@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -26,14 +27,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.cors().and().csrf().disable()
-            .authorizeRequests()
-                .requestMatchers("/auth/login", "/auth/refresh").permitAll() // Permit login request without authentication
-                .requestMatchers("/Users/add").permitAll() // Permit add request without authentication
-                .anyRequest().authenticated() // Authenticate all other requests
+            .authorizeHttpRequests()
+                // Permettre l'accès public à ces endpoints
+                .requestMatchers(
+                    "/auth/login", 
+                    "/auth/refresh", 
+                    "/Users/add", 
+                    "/Users/confirm-employee", 
+                    "/Users/test-email"
+                ).permitAll()
+                // Protéger tous les autres endpoints
+                .anyRequest().authenticated()
             .and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS); // Disable sessions, use JWT for authentication
+            .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS); // JWT basé sur des tokens, pas de sessions
 
-        // Add JWT filter before the authentication filter
+        // Ajouter le filtre JWT avant le filtre d'authentification
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
