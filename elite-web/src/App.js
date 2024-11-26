@@ -56,7 +56,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/login" element={<LoginPage sessionExpired={sessionExpired} />}/>
-        <Route path="/" element={isAuthenticated ? <RegistrationForm /> : <Navigate to="/sign-in" />}/>
+        <Route path="/" element={isAuthenticated ? <Homepage /> : <Navigate to="/sign-in" />}/>
         <Route path="/Registration" element={<RegistrationForm />} />
         <Route path="/confirmation" element={<ConfirmationPage />} />
         <Route path="/sign-in" element={<Login />} />
@@ -64,11 +64,11 @@ function App() {
         <Route path="/employeeinterface" element={<EmployeeInterface />} /> 
         <Route path="/ManagerInterface" element={<ManagerInterface />} />
       <Route path="/users-profile" element={<ProfilePage />} />
-      <Route path="/UserTable" element={<UserTable />} />       /* supprission*/
+      <Route path="/UserTable" element={<UserTable />} />       
 
 
-      <Route path="/users" element={<UserList />} />    /* modification*/
-      <Route path="/edit-user/:id" element={<EditUserForm />} /> /*formulaire_modification*/
+      <Route path="/users" element={<UserList />} />    
+      <Route path="/edit-user/:id" element={<EditUserForm />} /> 
       </Routes>
     </Router>
   );
