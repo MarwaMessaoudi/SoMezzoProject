@@ -1,0 +1,21 @@
+.dashboard-section {
+    padding: 20px;
+    background-color: #f9f9f9;
+  }
+  
+  .charts-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+  
+  .chart {
+    width: 30%;
+    margin: 20px 0;
+  }
+  
+  .chart h3 {
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  

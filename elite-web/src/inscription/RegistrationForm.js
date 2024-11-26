@@ -39,9 +39,21 @@ function RegistrationForm() {
     if (!formData.email) newErrors.email = "Email required";
     if (!formData.birthDate) newErrors.birthDate = "Birth Date required";
     if (!formData.role) newErrors.role = "Position required";
-    if (!formData.password) newErrors.password = "password required";
+
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!])[\w@#$%^&+=!]{8,}$/;
+    if (!formData.password) {
+      newErrors.password = "Password required";
+    } else if (!passwordRegex.test(formData.password)) {
+      newErrors.password = "Password must include at least 8 characters, with uppercase, lowercase, a number, and a special character (@, #, $, %, ^, &, +, =, or !)";
+    }
+
+
     if (formData.password !== formData.confirmPassword)
       newErrors.confirmPassword = "Passwords do not match";
+
+
+
+
 
     // Met à jour l'état des erreurs avec les nouvelles erreurs trouvées
     setErrors(newErrors);
@@ -66,11 +78,16 @@ function RegistrationForm() {
         });
         console.log(formData.role);
         if (response.status === 200) {
-          navigate("/confirmation");
+          navigate("/ManagerInterface");
         }
       } catch (error) {
         console.error("Error registering user:", error);
         // Optionally set an error message to display to the user
+        if (error.response && error.response.status === 400) {
+          setErrors({ email: error.response.data });
+        } else {
+          setErrors({ email: "An unexpected error occurred. Please try again later." });
+        }
       }
     }
   };

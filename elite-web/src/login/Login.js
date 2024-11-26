@@ -37,7 +37,7 @@ const Login = () => {
           sessionStorage.setItem("refreshToken", refreshToken);
         }
 
-        navigate("/dashboard");
+        navigate("/ManagerInterface");
       } else {
         setLoginMessage("Account not approved");
       }
