@@ -8,4 +8,9 @@ public interface UserServiceInterface{
     public User addUser(User user);
     public User findByEmail(String email);
 
+    //added for the confirmation email - Melek
+    String confirmEmployee(String email);  // Déclaration de la méthode confirmEmployee
+    String testEmail();  // Déclaration de la méthode testEmail
+
+    
 }
