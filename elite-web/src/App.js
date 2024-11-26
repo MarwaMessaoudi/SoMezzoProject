@@ -8,7 +8,7 @@ import React, { useState, useEffect } from 'react';
 import LoginPage from './LoginPage';
 import CompteValide from "./valide/compteValide";
 import Controller from "./interface/controller";  // Capitalized component name
-
+import EmployeeInterface from './Interface/Employee/employeeInterface';
 const INACTIVITY_TIMEOUT = 1 * 60 * 1000; // 10 minutes
 
 function App() {
@@ -45,22 +45,15 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route
-          path="/login"
-          element={<LoginPage sessionExpired={sessionExpired} />}
-        />
-        <Route
-          path="/"
-          element={isAuthenticated ? <Homepage /> : <Navigate to="/sign-in" />}
-        />
+        <Route path="/login" element={<LoginPage sessionExpired={sessionExpired} />}/>
+        <Route path="/" element={isAuthenticated ? <Homepage /> : <Navigate to="/sign-in" />}/>
         <Route path="/Registration" element={<RegistrationForm />} />
         <Route path="/confirmation" element={<ConfirmationPage />} />
         <Route path="/sign-in" element={<Login />} />
         <Route path="/resetpassword" element={<ResetPass />} />
         <Route path="/comptevalide" element={<CompteValide />} /> {/* Example */}
         <Route path="/controller" element={<Controller />} /> {/* Example of using the Controller component */}
-
-
+        <Route path="/employeeinterface" element={<EmployeeInterface />} /> 
       </Routes>
     </Router>
   );
