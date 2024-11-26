@@ -37,7 +37,6 @@ const Login = () => {
           sessionStorage.setItem("accessToken", accessToken);
           sessionStorage.setItem("refreshToken", refreshToken);
         }
-
         // Save roles to localStorage/sessionStorage
         localStorage.setItem("roles", JSON.stringify(roles));
 

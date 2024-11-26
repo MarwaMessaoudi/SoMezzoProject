@@ -1,8 +1,13 @@
-// Home.js
 import React from "react";
 import "./home.css"; // Ensure the file name matches the casing exactly
 import { Link, useNavigate } from "react-router-dom";
 function Homepage() {
+  const navigate = useNavigate(); // Initialize the navigate function
+
+  const handleGetStarted = () => {
+    navigate("/sign-in "); // Navigate to the login route
+  };
+
   return (
     <div className="homepage">
       <header className="homepage-header">
