@@ -6,6 +6,8 @@ import Login from "./login/Login";
 import ResetPass from "./login/ResetPass";
 import React, { useState, useEffect } from 'react';
 import LoginPage from './LoginPage';
+import CompteValide from "./valide/compteValide";
+import Controller from "./interface/controller";  // Capitalized component name
 
 const INACTIVITY_TIMEOUT = 1 * 60 * 1000; // 10 minutes
 
@@ -55,6 +57,10 @@ function App() {
         <Route path="/confirmation" element={<ConfirmationPage />} />
         <Route path="/sign-in" element={<Login />} />
         <Route path="/resetpassword" element={<ResetPass />} />
+        <Route path="/comptevalide" element={<CompteValide />} /> {/* Example */}
+        <Route path="/controller" element={<Controller />} /> {/* Example of using the Controller component */}
+
+
       </Routes>
     </Router>
   );
