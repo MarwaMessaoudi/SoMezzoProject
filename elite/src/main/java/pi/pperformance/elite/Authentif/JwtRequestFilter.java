@@ -18,7 +18,7 @@ import java.io.IOException;
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    private static final long INACTIVITY_TIMEOUT = 10 * 60 * 1000; // 10 minutes
+    private static final long INACTIVITY_TIMEOUT = 1 * 60 * 1000; // 10 minutes
 
     @Autowired
     private JwtUtils jwtUtil;

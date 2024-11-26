@@ -32,7 +32,7 @@ html,
 }
 
 .navbarlight {
-  background-color: #ffffff;
+  background-color: #070707;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
 }
 
@@ -43,10 +43,11 @@ html,
   text-align: left;
 }
 
+/* Couleur e tt le form de sign in */
 .authinner {
   width: 450px;
   margin: auto;
-  background: #ffffff;
+  background: #dff4f8;
   box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.2);
   padding: 40px 55px 45px 55px;
   border-radius: 15px;
@@ -69,7 +70,6 @@ html,
   font-weight: 400;
 }
 
-
 .forgotpassword {
   text-align: right;
 }
@@ -81,20 +81,19 @@ form input[type="checkbox"] {
        display: inline-block;
       width: auto;
 }
+
+/*ecriture des champs*/
 form label{
   align-items: baseline;
-  color: #666;
+  color: #0d0e0e;
   font-size: .875rem;
   display: contents;
 }
 
-
-
-
 .forgotpassword button {
   background: none;
   border: none;
-  color: #007bff;
+  color: #0b0c0c;
   cursor: pointer;
   padding: 0;
   font-size: 14px;
@@ -122,7 +121,7 @@ form label{
 
 h3 {
   text-align: center;
-  color: #333;
+  color: #050404;
   margin-bottom: 20px;
   font-size: 24px;
   font-weight: bold;
@@ -136,7 +135,7 @@ h3 {
 
 label {
   font-weight: bold;
-  color: #333;
+  color: #87CEEB;
   margin-bottom: 5px;
   display: block;
 }
@@ -146,7 +145,7 @@ label {
   width: 100%;
   padding: 10px;
   border-radius: 5px;
-  border: 1px solid #ccc;
+  border: 1px solid #0a0a0a;
   font-size: 16px;
   margin-bottom: 10px;
   box-sizing: border-box;
