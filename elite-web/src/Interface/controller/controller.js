@@ -1,9 +1,92 @@
 import React from "react"; // Importing React library to create the component
 import './controller.css'; // Importing the CSS file for styling the component
-import logo from '../assets/logo1.png'; // Importing the logo image
-
+import logo from '../../assets/logo1.png'; // Importing the logo image
+import { useState, useEffect } from "react";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+const INACTIVITY_TIMEOUT =  5* 60 * 1000; // 5 minutes
+ 
 // Functional component for the controller section of the application
-const controller = () => {
+const Controller = ({onLogout}) => {
+  const navigate = useNavigate();
+  const [sessionExpired, setSessionExpired] = useState(false);
+
+  //-------------------------- Token Expiration Logic --------------------------//
+  const performLogout = () => {
+    // Clear tokens from storage
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("refreshToken");
+    // Redirect to login page
+    navigate("/sign-in");
+  };
+
+  const handleTokenExpiry = () => {
+    const accessToken =
+      localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
+
+    if (accessToken) {
+      try {
+        const decodedToken = jwtDecode(accessToken);
+        const expiryTime = decodedToken.exp * 1000; // Convert expiry time to milliseconds
+        const currentTime = Date.now();
+
+        if (expiryTime > currentTime) {
+          // Set a timeout to log out when the token expires
+          setTimeout(() => {
+            performLogout();
+          }, expiryTime - currentTime);
+        } else {
+          performLogout(); // Immediate logout if the token is already expired
+        }
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        performLogout(); // Logout in case of any decoding errors
+      }
+    } else {
+      performLogout(); // Logout if no token is found
+    }
+  };
+
+  // Monitor session expiration and token expiry on component mount
+  useEffect(() => {
+    handleTokenExpiry();
+  }, []);  // Runs once when the component is mounted
+
+  //---------------------------- Session Timeout Logic ------------------------//
+  useEffect(() => {
+    let inactivityTimer;
+
+    const resetInactivityTimer = () => {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(() => {
+        setSessionExpired(true);
+        onLogout(); // Perform logout when the session times out
+        alert("Your session has expired due to inactivity. Redirecting to login...");
+        navigate("/sign-in"); // Redirect to login page
+      }, INACTIVITY_TIMEOUT);
+    };
+
+    const events = ["mousemove", "keydown", "scroll", "click"];
+    events.forEach((event) => {
+      window.addEventListener(event, resetInactivityTimer);
+    });
+
+    resetInactivityTimer();  // Initialize inactivity timer
+
+    return () => {
+      clearTimeout(inactivityTimer);
+      events.forEach((event) => {
+        window.removeEventListener(event, resetInactivityTimer);
+      });
+    };
+  }, [onLogout, navigate]);
+
+  //-------------------- Render Based on Session Expiry -----------------------//
+  if (sessionExpired) {
+    return null; // No UI is rendered if the session is expired
+  }
   return (
     <div className="app">
       {/* Header section of the application */}
@@ -140,4 +223,4 @@ const controller = () => {
   );
 };
 
-export default controller; // Export the controller component for use in other parts of the application
+export default Controller; // Export the controller component for use in other parts of the application

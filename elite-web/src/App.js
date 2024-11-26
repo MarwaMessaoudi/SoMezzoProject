@@ -4,56 +4,52 @@ import ConfirmationPage from "./inscription/ConfirmationPage";
 import Homepage from "./home/HelloWorld";
 import Login from "./login/Login";
 import ResetPass from "./login/ResetPass";
-import React, { useState, useEffect } from 'react';
-import LoginPage from './LoginPage';
-import CompteValide from "./valide/compteValide";
-import Controller from "./interface/controller";  // Capitalized component name
-import EmployeeInterface from './Interface/Employee/employeeInterface';
-const INACTIVITY_TIMEOUT = 1 * 60 * 1000; // 10 minutes
+import EmployeeInterface from './interface/Employee/employeeInterface';
+import Controller from './interface/controller/controller';
+import CompteValide from './valide/compteValide';
+import { jwtDecode } from 'jwt-decode';
+
+/*const ProtectedRoute = ({ element }) => {
+  const token = localStorage.getItem("access_token") || sessionStorage.getItem("access_token");
+  let isAuthenticated = false;
+
+  if (token) {
+    try {
+      const decodedToken = jwtDecode(token);
+      console.log(decodedToken);
+      const expirationTime = decodedToken.exp * 1000; // Token expiry time in milliseconds
+      if (expirationTime >= Date.now()) {
+        isAuthenticated = true;
+      }
+    } catch (error) {
+      console.error("Token error", error);
+      isAuthenticated = false;
+    }
+  }
+
+  return isAuthenticated ? element : <Navigate to="/sign-in" />;
+};*/
+const onLogout = () => {
+  // Clear tokens from localStorage and sessionStorage
+  localStorage.removeItem("accessToken");
+  localStorage.removeItem("refreshToken");
+  sessionStorage.removeItem("accessToken");
+  sessionStorage.removeItem("refreshToken");
+};
+
 
 function App() {
-  const [sessionExpired, setSessionExpired] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(true);
-
-  useEffect(() => {
-    let inactivityTimer;
-
-    const resetInactivityTimer = () => {
-      clearTimeout(inactivityTimer);
-      inactivityTimer = setTimeout(() => {
-        setSessionExpired(true);
-        alert('Your session has expired. Please log in again.');
-        setIsAuthenticated(false);
-      }, INACTIVITY_TIMEOUT);
-    };
-
-    const events = ['mousemove', 'keydown', 'scroll', 'click'];
-    events.forEach(event => {
-      window.addEventListener(event, resetInactivityTimer);
-    });
-
-    resetInactivityTimer();
-
-    return () => {
-      clearTimeout(inactivityTimer);
-      events.forEach(event => {
-        window.removeEventListener(event, resetInactivityTimer);
-      });
-    };
-  }, []);
-
   return (
     <Router>
       <Routes>
-        <Route path="/login" element={<LoginPage sessionExpired={sessionExpired} />}/>
-        <Route path="/" element={isAuthenticated ? <Homepage /> : <Navigate to="/sign-in" />}/>
+        <Route path="/sign-in" element={<Login />} />
+        <Route path="/" element={<Homepage />}  />
         <Route path="/Registration" element={<RegistrationForm />} />
         <Route path="/confirmation" element={<ConfirmationPage />} />
-        <Route path="/sign-in" element={<Login />} />
         <Route path="/resetpassword" element={<ResetPass />} />
-        <Route path="/comptevalide" element={<CompteValide />} /> {/* Example */}
-        <Route path="/controller" element={<Controller />} /> {/* Example of using the Controller component */}
-        <Route path="/employeeinterface" element={<EmployeeInterface />} /> 
+        <Route path="/employeeinterface" element={<EmployeeInterface onLogout={onLogout} />} />
+        <Route path="/controller" element={<Controller onLogout={onLogout}/>} />
+        <Route path='/validate' element={<CompteValide />} />
       </Routes>
     </Router>
   );

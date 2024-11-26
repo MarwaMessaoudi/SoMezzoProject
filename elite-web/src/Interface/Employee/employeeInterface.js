@@ -1,12 +1,96 @@
 import React from "react";
 import './employee.css';
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 import { Bar } from "react-chartjs-2";  // Import the Bar chart from react-chartjs-2
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js'; // Import Chart.js components
+import { useState, useEffect } from "react";
 
 // Register the necessary Chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+const INACTIVITY_TIMEOUT =  5* 60 * 1000; // 5 minutes
+const EmployeeInterface = ({ onLogout }) => {
+  const navigate = useNavigate();
+  const [sessionExpired, setSessionExpired] = useState(false);
 
-const EmployeeInterface = () => {
+  //-------------------------- Token Expiration Logic --------------------------//
+  const performLogout = () => {
+    // Clear tokens from storage
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+    sessionStorage.removeItem("accessToken");
+    sessionStorage.removeItem("refreshToken");
+    // Redirect to login page
+    navigate("/sign-in");
+  };
+
+  const handleTokenExpiry = () => {
+    const accessToken =
+      localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
+
+    if (accessToken) {
+      try {
+        const decodedToken = jwtDecode(accessToken);
+        const expiryTime = decodedToken.exp * 1000; // Convert expiry time to milliseconds
+        const currentTime = Date.now();
+
+        if (expiryTime > currentTime) {
+          // Set a timeout to log out when the token expires
+          setTimeout(() => {
+            performLogout();
+          }, expiryTime - currentTime);
+        } else {
+          performLogout(); // Immediate logout if the token is already expired
+        }
+      } catch (error) {
+        console.error("Error decoding token:", error);
+        performLogout(); // Logout in case of any decoding errors
+      }
+    } else {
+      performLogout(); // Logout if no token is found
+    }
+  };
+
+  // Monitor session expiration and token expiry on component mount
+  useEffect(() => {
+    handleTokenExpiry();
+  }, []);  // Runs once when the component is mounted
+
+  //---------------------------- Session Timeout Logic ------------------------//
+  useEffect(() => {
+    let inactivityTimer;
+
+    const resetInactivityTimer = () => {
+      clearTimeout(inactivityTimer);
+      inactivityTimer = setTimeout(() => {
+        setSessionExpired(true);
+        onLogout(); // Perform logout when the session times out
+        alert("Your session has expired due to inactivity. Redirecting to login...");
+        navigate("/sign-in"); // Redirect to login page
+      }, INACTIVITY_TIMEOUT);
+    };
+
+    const events = ["mousemove", "keydown", "scroll", "click"];
+    events.forEach((event) => {
+      window.addEventListener(event, resetInactivityTimer);
+    });
+
+    resetInactivityTimer();  // Initialize inactivity timer
+
+    return () => {
+      clearTimeout(inactivityTimer);
+      events.forEach((event) => {
+        window.removeEventListener(event, resetInactivityTimer);
+      });
+    };
+  }, [onLogout, navigate]);
+
+  //-------------------- Render Based on Session Expiry -----------------------//
+  if (sessionExpired) {
+    return null; // No UI is rendered if the session is expired
+  }
+
+  //-------------------------------the analysis----------------------//
   // Data for the first chart: Payments Over Time
   const paymentData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'], // X-axis labels
@@ -272,9 +356,6 @@ const EmployeeInterface = () => {
     </div>
   </section>
 </div>
-
-
-
       </div>
     </div>
   );

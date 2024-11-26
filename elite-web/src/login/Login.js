@@ -24,11 +24,12 @@ const Login = () => {
 
     try {
       const response = await apiClient.post("/auth/login", { email, password });
-      const { accessToken, refreshToken, isActive } = response.data;
-
+      const { accessToken, refreshToken, isActive, roles } = response.data; // Get roles from the response
+      console.log(response.data); 
       if (isActive) {
         setLoginMessage("Login successful!");
 
+        // Save tokens to localStorage/sessionStorage
         if (rememberMe) {
           localStorage.setItem("accessToken", accessToken);
           localStorage.setItem("refreshToken", refreshToken);
@@ -37,7 +38,21 @@ const Login = () => {
           sessionStorage.setItem("refreshToken", refreshToken);
         }
 
-        navigate("/EmployeeInterface");
+        // Save roles to localStorage/sessionStorage
+        localStorage.setItem("roles", JSON.stringify(roles));
+
+        // Redirect based on roles
+        if (roles && roles.includes('ROLE_CONTROLLER')) {
+          navigate("/controller"); // Redirect to controller dashboard
+        } else if (roles && roles.includes('ROLE_MANAGER')) {
+          navigate("/user-dashboard"); // Redirect to Manager dashboard
+        } else if (roles && roles.includes('ROLE_EMPLOYEE')) {
+          navigate("/employeeinterface"); // Redirect to employee interface
+        } else {
+          navigate("/"); // Default redirect if no specific role is found
+        }
+        
+        console.log("Navigating to the correct dashboard based on role");
       } else {
         setLoginMessage("Account not approved");
       }
@@ -45,7 +60,7 @@ const Login = () => {
       if (error.response) {
         setLoginMessage(error.response.data.message || "Login failed!");
       } else {
-        setLoginMessage("An unexpected error occurred.");
+        setLoginMessage(error.message);
       }
     } finally {
       setLoading(false);
