@@ -1,7 +1,6 @@
 import React from "react";
-import { useNavigate } from "react-router-dom"; // Import useNavigate
-import "./home.css";
-
+import "./home.css"; // Ensure the file name matches the casing exactly
+import { Link, useNavigate } from "react-router-dom";
 function Homepage() {
   const navigate = useNavigate(); // Initialize the navigate function
 
@@ -31,9 +30,9 @@ function Homepage() {
         <section className="hero">
           <h1>Welcome to SoMezzo Employee Portal</h1>
           <p>Streamline your tasks and enhance productivity with our centralized tools and dashboards.</p>
-          <button className="cta-button" onClick={handleGetStarted}>
-            Get Started
-          </button>
+          <Link to="/sign-in">
+            <button className="cta-button">Log in</button>
+          </Link>
         </section>
 
         <section id="dashboard" className="dashboard-section">

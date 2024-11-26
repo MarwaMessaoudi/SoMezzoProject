@@ -39,7 +39,7 @@ public class MyUserDetailsService implements UserDetailsService {
         if (userRole == null) {
             throw new UsernameNotFoundException("User does not have a valid role.");
         }
-
+        
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + userRole.name());
 
         return new org.springframework.security.core.userdetails.User(

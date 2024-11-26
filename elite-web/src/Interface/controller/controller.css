@@ -1,0 +1,309 @@
+/* ---------- Global Variables ---------- */ 
+:root {
+    --color-gray-900: #1e1e1e;
+    --color-gray-800: #2e2e2e;
+    --color-gray-700: #3e3e3e;
+    --color-gray-600: #e60f0f;
+    --color-gray-300: #d1d1d1;
+    --color-gray-100: #f7f7f7;
+    --color-white: #ffffff;
+  
+    --color-blue-900: #486dc4;
+    --color-blue-800: #0f1d83;
+    --color-blue-700: #000000;
+    --color-blue-500: #27659b;
+  
+    --color-orange-500: #ff9800;
+  
+    --color-green-500: #4bd9cd;
+    --color-olive-500: #00a26a;
+  }
+  
+  /* ---------- General Styles ---------- */
+  body {
+    margin: 0;
+    font-family: "Arial", sans-serif;
+    background-color: var(--color-gray-100);
+    color: var(--color-gray-900);
+  }
+  
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+  
+  button {
+    cursor: pointer;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    transition: all 0.3s ease;
+  }
+  
+  .icon-button {
+    background: none;
+    color: var(--color-gray-300);
+    font-size: 1.25rem;
+  }
+  
+  .icon-button:hover {
+    color: var(--color-orange-500);
+    transform: scale(1.1);
+  }
+  
+  /* ---------- App Layout ---------- */
+  .app {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  .app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: var(--color-blue-900);
+  }
+  
+  .app-header-logo {
+    display: flex;
+    align-items: center;
+  }
+  
+  .logo-icon img {
+    height: 40px;
+    width: 40px;
+    margin-right: 10px;
+  }
+  
+  .logo-title span {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--color-white);
+  }
+  
+  .app-header-navigation .tabs {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .tabs a {
+    padding: 10px 15px;
+    color: var(--color-gray-300);
+    font-size: 0.875rem;
+    border-radius: 4px;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .tabs a.active,
+  .tabs a:hover {
+    color: var(--color-white);
+    background-color: var(--color-orange-500);
+  }
+  
+  .app-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .user-profile img {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+  }
+  
+  /* ---------- Body Layout ---------- */
+  .app-body {
+    display: flex;
+    flex: 1;
+  }
+  
+  /* Sidebar Navigation */
+  .app-body-navigation {
+    width: 240px;
+    background-color: var(--color-blue-900);
+    color: var(--color-white);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  
+  .navigation a {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    color: var(--color-gray-300);
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .navigation a:hover {
+    background-color: var(--color-blue-700);
+    color: var(--color-orange-500);
+  }
+  
+  .navigation a i {
+    margin-right: 10px;
+  }
+  
+  .footer {
+    text-align: center;
+    padding: 15px;
+    background-color: var(--color-blue-800);
+    font-size: 0.75rem;
+    color: var(--color-gray-300);
+  }
+  
+  /* Main Content */
+  .app-body-main-content {
+    flex: 1;
+    padding: 20px;
+    background-color: var(--color-gray-100);
+  }
+  
+  .service-section {
+    margin-bottom: 20px;
+  }
+  
+  .service-section h2 {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    color: var(--color-gray-900);
+  }
+  
+  .tiles {
+    display: flex;
+    gap: 20px;
+  }
+  
+  .tile {
+    background: var(--color-white);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  
+  .tile:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--color-blue-500);
+  }
+  
+  .tile-header i {
+    font-size: 1.5rem;
+    margin-right: 10px;
+    color: var(--color-orange-500);
+  }
+  
+  .tile a {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--color-blue-500);
+    font-size: 0.875rem;
+  }
+  
+  .tile a:hover {
+    color: var(--color-orange-500);
+  }
+  
+  /* Sidebar: Payments */
+  .app-body-sidebar {
+    width: 360px;
+    background-color: var(--color-gray-50);
+    border-left: 1px solid var(--color-gray-300);
+    padding: 20px;
+  }
+  
+  .payment-section h2 {
+    margin-bottom: 15px;
+    font-size: 1.5rem;
+    color: var(--color-gray-900);
+  }
+  
+  .payment-section-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+  
+  .card-button {
+    padding: 10px 20px;
+    border: 1px solid var(--color-gray-600);
+    border-radius: 4px;
+    background-color: transparent;
+    transition: background-color 0.3s, color 0.3s;
+  }
+  
+  .card-button:hover {
+    background-color: var(--color-blue-500);
+    color: var(--color-white);
+  }
+  
+  .card-button.active {
+    background-color: var(--color-orange-500);
+    color: var(--color-white);
+  }
+  
+  .payments {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .payment {
+    display: flex;
+    align-items: center;
+  }
+  
+  .card {
+    width: 100px;
+    height: 60px;
+    border-radius: 4px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--color-white);
+    transition: transform 0.3s;
+  }
+  
+  .card.green {
+    background-color: var(--color-green-500);
+  }
+  
+  .card.olive {
+    background-color: var(--color-olive-500);
+  }
+  
+  .card.gray {
+    background-color: var(--color-gray-300);
+    color: var(--color-gray-800);
+  }
+  
+  .payment:hover .card {
+    transform: scale(1.1);
+  }
+  
+  .payment-details {
+    margin-left: 15px;
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .payment-details h3 {
+    font-size: 1rem;
+    color: var(--color-gray-700);
+  }

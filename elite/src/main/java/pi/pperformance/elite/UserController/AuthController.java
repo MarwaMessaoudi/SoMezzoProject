@@ -1,6 +1,9 @@
 package pi.pperformance.elite.UserController;
 
+import java.util.Collection;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import pi.pperformance.elite.Authentif.JwtUtils;
 import pi.pperformance.elite.UserServices.UserServiceImplmnt;
+import pi.pperformance.elite.entities.Role;
 import pi.pperformance.elite.entities.User;
 
 @RestController
@@ -39,54 +44,51 @@ public class AuthController {
     
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
-
         String email = loginRequest.get("email");
         String password = loginRequest.get("password");
         log.info("Authenticating user with email: {}", email);
-        log.info("Authenticating user with password: {}", password);
+        
         try {
-            // Authenticate user using AuthenticationManager to validate credentials
+            // Authenticate user
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
             
-            // Load user details and generate JWT token
+            // Load user details (which includes authorities/roles)
             final UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-            //logs to clarify the bugs
-            log.info("Authenticating the user: {}", userDetails);
-            //the isActive process
-            User user = userServices.findByEmail(email); // Fetch user entity from DB
-            //troubleshooting
-            log.info("Authenticating user with the corresponding email: {}", user);
+            
+            // Get authorities (roles) from UserDetails
+            Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+            
+            // Fetch user entity from DB
+            User user = userServices.findByEmail(email);
+            
             if (user == null || !user.getIsActive()) {
                 return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
                     "message", "Account is inactive!",
                     "errorCode", "AUTH002"
                 ));
             }
-            final String accessToken = jwtUtil.generateToken(userDetails.getUsername());
-            //troubleshooting
-            log.info("Access token: {}", accessToken);
-            //generate the refreshtoken
-            final String refreshToken = jwtUtil.generateRefreshToken(userDetails.getUsername());
-            //troubleshooting
-            log.info("Refresh Token", refreshToken);
-            Boolean isActive = user.getIsActive();
-            //troubleshooting
-            log.info("isActive", isActive);
-            // Return the generated JWT token in the response
+            
+            // Generate JWT tokens
+            final String accessToken = jwtUtil.generateToken(userDetails.getUsername(), authorities); // Use authorities
+            final String refreshToken = jwtUtil.generateRefreshToken(userDetails.getUsername(), authorities); // Use authorities
+            
             return ResponseEntity.ok(Map.of(
-            "accessToken", accessToken,
-            "refreshToken", refreshToken,
-            "isActive", isActive
-        ));
+                "accessToken", accessToken,
+                "refreshToken", refreshToken,
+                "isActive", user.getIsActive(),
+                "roles", authorities.stream()
+                    .map(GrantedAuthority::getAuthority)
+                    .collect(Collectors.toList()) // Add roles to the response
+            ));
         } catch (AuthenticationException e) {
-            // If authentication fails, return error response
-            //changed the message so we can have more clarity about the error
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
     }
+    
 //maram
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshAccessToken(@RequestBody Map<String, String> request){
+        
         //extracting the refresh token from the request
         String refreshToken = request.get("refreshToken");
         if (refreshToken ==null){
@@ -107,6 +109,9 @@ public class AuthController {
             //)
             );
         }
+        // Get the roles (authorities) from the user details
+Collection<? extends GrantedAuthority> authorities = userDetailsService.loadUserByUsername(email).getAuthorities();
+// Convert authorities to a list of Role objects
         // Validate the refresh token using both email and token
     if (!jwtUtil.validateToken(refreshToken, email)) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
@@ -114,7 +119,7 @@ public class AuthController {
             "errorCode", "AUTH005"
         ));
     }
-        String newAccessToken = jwtUtil.generateToken(email);
+        String newAccessToken = jwtUtil.generateToken(email, authorities);
         return ResponseEntity.ok(Map.of("accessToken", newAccessToken));
     }
 }
