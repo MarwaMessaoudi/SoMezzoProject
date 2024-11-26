@@ -61,10 +61,12 @@ function RegistrationForm() {
           email: formData.email,
           birthDate: formData.birthDate,
           role: formData.role,
+          
           password: formData.password
         });
+        console.log(formData.role);
         if (response.status === 200) {
-          navigate("/confirmation");
+          navigate("/ManagerInterface");
         }
       } catch (error) {
         console.error("Error registering user:", error);
@@ -149,9 +151,9 @@ return (
             {/* Option par défaut pour inviter l'utilisateur à sélectionner son poste */}
             <option value="">select your post</option>
             {/* Option pour le poste d'employé */}
-            <option value="employe">employee</option>
+            <option value="EMPLOYEE">employee</option>
             {/* Option pour le poste de contrôleur */}
-            <option value="controlleur">controller</option>
+            <option value="CONTROLLER">controller</option>
           </select>
           {/* Affichage du message d'erreur pour le poste si une erreur est présente */}
           {errors.role && <p className="error">{errors.role}</p>}

@@ -21,11 +21,12 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @RequestMapping("/Users")
 public class UserController {
 	@Autowired
-	private JwtUtils jwtUtils;
-    @Autowired
-    UserServiceInterface usrService; //autowiring the service interface here to access the functions we declared there
+    private JwtUtils jwtUtils;
 
-    //the add function that allow us to add a user to the database
+    @Autowired
+    private UserServiceInterface usrService; // Autowiring the service interface here to access the functions we declared there
+
+    // Add function that allows us to add a user to the database
     @PostMapping("/add")
     public ResponseEntity<String> AddUser(@RequestBody User user) {
         User savedUser = usrService.addUser(user);  
@@ -62,5 +63,11 @@ public class UserController {
     @GetMapping("/allid/{id}")
     public User getUserById(@PathVariable Long id) {
         return usrService.getUserById(id);
+    public ResponseEntity<String> addUser(@RequestBody User user) {
+        // Register the user with an inactive status
+        User savedUser = usrService.addUser(user);
+        
+        // Returning a response indicating that the user needs approval by admin
+        return ResponseEntity.ok("Registration successful! Your account is pending approval by an admin.");
     }
 }
