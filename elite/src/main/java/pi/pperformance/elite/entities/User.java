@@ -44,6 +44,7 @@ public User(String FN, String LN, String mail, Role role, String pwd){
     this.role=role;
     this.password = pwd;
     this.birthDate = LocalDate.now();// je change le type en localdate pour la Compatibilité avec JSON et la base de données
+    this.isActive=false;
   // j'ajouter le dependence de date pour fait la conversion de date en json au moment de tstse dans postman
 }
 public void setId(Long id) {
@@ -95,5 +96,12 @@ public String getConfirm_password() {
     return confirm_password;
 }
 
-    
+public void setIsActive(Boolean isactive) {
+    this.isActive = isActive;
+}
+
+
+public boolean getIsActive() {
+    return isActive;
+}
 }
