@@ -33,4 +33,34 @@ public class UserController {
         String token = jwtUtils.generateToken(savedUser.getEmail()); 
 
        return ResponseEntity.ok("Token : "+" "+token);
-       }}
+       }
+     @GetMapping("/alluser")
+    public List<User> getAllUsers() {
+        return usrService.getAllUsers();}
+    @GetMapping("/useremail/{email}")
+    public ResponseEntity<?> getUserByEmail(@PathVariable String email) {
+        try {
+            User user = usrService.getUserByEmail(email);
+            return ResponseEntity.ok(user); // Code HTTP 200 si trouvé
+        } catch (AccountNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage()); // Code HTTP 404 si non trouvé
+        }}
+    
+    @GetMapping("/allid/{id}")
+    public User getUserById(@PathVariable Long id) {
+        return usrService.getUserById(id);
+    }
+    @GetMapping("/useremail/{email}")
+    public ResponseEntity<?> getUserByEmail(@PathVariable String email) {
+        try {
+            User user = usrService.getUserByEmail(email);
+            return ResponseEntity.ok(user); // Code HTTP 200 si trouvé
+        } catch (AccountNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage()); // Code HTTP 404 si non trouvé
+        }}
+    
+    @GetMapping("/allid/{id}")
+    public User getUserById(@PathVariable Long id) {
+        return usrService.getUserById(id);
+    }
+}

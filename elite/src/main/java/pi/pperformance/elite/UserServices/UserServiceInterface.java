@@ -13,6 +13,9 @@ import java.util.List;
 public interface UserServiceInterface{
 //please make sure to name the entity "User" so the code recognize it and most of the red underlined User will be gone
     public User addUser(User user);
-
-
+    public User updateUser(Long id, User userDetails); 
+    public void deleteUser(Long id);
+    public	List<User> getAllUsers();
+    public User getUserByEmail(String email);
+    public User getUserById(Long id);
 }

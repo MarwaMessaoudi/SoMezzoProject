@@ -24,4 +24,57 @@ public class UserServiceImplmnt implements UserServiceInterface {
 
         return UsrRepo.save(user);
     }
+    // cette fonction retourne liste de users
+    @Override
+    public List<User> getAllUsers(){
+    	return UsrRepo.findAll()
+;    	
+    }
+
+    // retourne un user par id et si n'existe pas retourne null
+    @Override
+    public User getUserById(Long id) {
+        return UsrRepo.findById(id).orElse(null);
+    }
+    @Override
+
+
+public User getUserByEmail(String email) {
+    User user = UsrRepo.findByEmail(email);
+    if (user == null) {
+        throw new pi.pperformance.elite.exceptions.AccountNotFoundException("User with email " + email + " not found");
+    }
+    return user;
+}
+
+	
+    // cette fonction permet de modifier les infos de users si existe snn retourner null
+	@Override
+    public User updateUser(Long id, User userDetails) {
+        Optional<User> optionalUser =  UsrRepo.findById(id);
+        if (optionalUser.isPresent()) {
+            User user = optionalUser.get();
+            user.setFirst_name(userDetails.getFirst_name());
+            user.setLast_name(userDetails.getLast_name());
+            user.setEmail(userDetails.getEmail());
+            user.setBirthDate(userDetails.getBirthDate());
+            user.setRole(userDetails.getRole());
+            user.setPassword(userDetails.getPassword());
+            return  UsrRepo.save(user);
+        }
+        return null;
+    }
+    
+
+    //cette methode cherché  le user par id a apres supprimer si existe snn affchier mssg 
+	@Override
+    public void deleteUser(Long id) {
+        if (UsrRepo.existsById(id)) {
+        	UsrRepo.deleteById(id);
+        } else {
+            throw new IllegalArgumentException("User with ID " + id +  " does not exist");
+        }
+    }
+
+	
 }

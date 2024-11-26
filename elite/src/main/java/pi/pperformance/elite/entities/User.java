@@ -9,6 +9,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Transient;
 //instead of this importation for the date attribute, I used this so the database can store it from the JSON file: import java.sql.Date; 
 import java.util.Date; 
+import java.time.LocalDate;
+
+
 
 
 
@@ -21,24 +24,27 @@ private Long id;
 private String first_name;
 private String last_name;
 private String email;
-private Date birthDate;
-private String role;
+private LocalDate birthDate;
+
+private Role role;
 private String password;
-private boolean isActive;  
 //to avoid adding this attribute to the database
 @Transient
 private String confirm_password;
 
+public User() {
+}
+
 
 //the enttity constructor
-public User(String FN, String LN, String mail, String role, String pwd,Boolean Active){
+public User(String FN, String LN, String mail, Role role, String pwd){
     this.first_name=FN;
     this.last_name=LN;
     this.email=mail;
     this.role=role;
     this.password = pwd;
-    this.birthDate = new Date();
-    this.isActive=false;
+    this.birthDate = LocalDate.now();// je change le type en localdate pour la Compatibilité avec JSON et la base de données
+  // j'ajouter le dependence de date pour fait la conversion de date en json au moment de tstse dans postman
 }
 public void setId(Long id) {
     this.id = id;
@@ -52,10 +58,10 @@ public void setLast_name(String last_name) {
 public void setEmail(String email) {
     this.email = email;
 }
-public void setBirthDate(Date birthDate) {
+public void setBirthDate(LocalDate birthDate) {
     this.birthDate = birthDate;
 }
-public void setRole(String role) {
+public void setRole(Role role) {
     this.role = role;
 }
 public void setPassword(String password) {
@@ -76,10 +82,10 @@ public String getLast_name() {
 public String getEmail() {
     return email;
 }
-public Date getBirthDate() {
+public LocalDate getBirthDate() {
     return birthDate;
 }
-public String getRole() {
+public Role getRole() {
     return role;
 }
 public String getPassword() {
@@ -89,15 +95,5 @@ public String getConfirm_password() {
     return confirm_password;
 }
 
-public void setIsActive(Boolean isactive) {
-    this.isActive = isActive;
-}
-
-
-public boolean getIsActive() {
-    return isActive;
-}
-
-public User() {
-}  
+    
 }
