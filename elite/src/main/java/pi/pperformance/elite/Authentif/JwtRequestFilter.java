@@ -7,7 +7,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import pi.pperformance.elite.Authentif.JwtUtils;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,55 +15,57 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@Component  // Mark this class as a Spring Bean to be managed by Spring's application context
+@Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private JwtUtils jwtUtil;  // Injecting the JwtUtils class, which provides utility methods for JWT operations
+    private static final long INACTIVITY_TIMEOUT = 10 * 60 * 1000; // 10 minutes
 
     @Autowired
-    private UserDetailsService userDetailsService;  // Injecting the UserDetailsService to load user details from the database
+    private JwtUtils jwtUtil;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
-        
-        // Extract JWT token from the Authorization header
-        final String authorizationHeader = request.getHeader("Authorization");  // Retrieve the "Authorization" header from the HTTP request
 
-        String email = null;  // Initialize the email variable to store the extracted email address
-        String jwtToken = null;  // Initialize the jwtToken variable to store the extracted JWT token
+        final String authorizationHeader = request.getHeader("Authorization");
+        String email = null;
+        String jwtToken = null;
 
-        // Check if header contains "Bearer " and extract token
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {  
-            // If the Authorization header exists and starts with "Bearer " (indicating a JWT token)
-            jwtToken = authorizationHeader.substring(7);  // Extract the JWT token by removing the "Bearer " prefix
-            email = jwtUtil.extractEmail(jwtToken);  // Use the JwtUtils class to extract the email  from the JWT token
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            jwtToken = authorizationHeader.substring(7);
+            email = jwtUtil.extractEmail(jwtToken);
         }
 
-        // Validate the token and set the SecurityContext if valid
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            // If an email is extracted and there is no existing authentication in the SecurityContext (i.e., the user is not authenticated yet)
-            UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);  
-            // Load the user details from the database using the email address (which is used as the username)
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
 
-            // Validate token and user details
             if (jwtUtil.validateToken(jwtToken, userDetails.getUsername())) {
-                // If the JWT token is valid (using JwtUtils to validate the token with the user's username)
-
-                // Set authentication in the security context
-                UsernamePasswordAuthenticationToken authToken =  
+                UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                // Create an Authentication object (UsernamePasswordAuthenticationToken) with the userDetails, authorities, and no password
+                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));  
-                // Set additional authentication details (e.g., the remote address of the request) using WebAuthenticationDetailsSource
+                // Gestion du délai d'inactivité
+                Object details = SecurityContextHolder.getContext().getAuthentication() != null
+                    ? SecurityContextHolder.getContext().getAuthentication().getDetails() : null;
 
-                SecurityContextHolder.getContext().setAuthentication(authToken);  
-                // Set the authentication object in the SecurityContextHolder, which makes the user authenticated for the current request
+                Long lastActivityTime = details instanceof Long ? (Long) details : null;
+
+                if (lastActivityTime != null && (System.currentTimeMillis() - lastActivityTime > INACTIVITY_TIMEOUT)) {
+                    SecurityContextHolder.clearContext();
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.getWriter().write("{\"message\":\"Session expired\"}");
+                    response.getWriter().flush();
+                    return;
+                }
+
+                authToken.setDetails(System.currentTimeMillis());
+                SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
-        
-        chain.doFilter(request, response); // Continue with the filter chain to process the next filter or the requested endpoint
-    
-}}
+
+        chain.doFilter(request, response);
+    }
+}

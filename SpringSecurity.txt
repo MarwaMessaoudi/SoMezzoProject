@@ -11,3 +11,14 @@ The class JwtUtils is designed to handle the creation, extraction, and validatio
 It allows the extraction of claims (like the subject/email and expiration date) from the token.
 It provides functionality to generate new tokens with an expiration time (defaulting to 10 hours) and ensures tokens are valid by checking both the email and expiration.
 
+-----------------------------------------------------------------------------
+Why use enum for roles?
+Centralized management: All role types are managed in one place (the enum), making it easier to modify or extend the roles in the future.
+Prevents errors: Using enums helps prevent errors that might occur when a role is mistyped (e.g., "admin" instead of "ADMIN").
+Readability: It makes your code more readable and self-explanatory by giving meaningful names to your role constants.
+Summary
+In short, the Role enum is used to define the possible user roles in your application (ADMIN, USER, and MANAGER).
+It provides type safety, clarity, and better maintainability by avoiding hardcoded string values and grouping related constants.
+It is a useful tool for role-based access control, allowing you to easily assign and check roles in your application.
+
+

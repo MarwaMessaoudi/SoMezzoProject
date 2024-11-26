@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pi.pperformance.elite.UserRepository.UserRepository;
-import pi.pperformance.elite.UserServices.UserServiceInterface;
 import pi.pperformance.elite.entities.User;
 
 @Service
@@ -23,5 +22,9 @@ public class UserServiceImplmnt implements UserServiceInterface {
         user.setPassword(encodedPassword);  // Set the hashed password
 
         return UsrRepo.save(user);
+    }
+
+    public User findByEmail(String email) {
+        return UsrRepo.findByEmail(email);
     }
 }
