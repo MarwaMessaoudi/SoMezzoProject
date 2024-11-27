@@ -49,16 +49,17 @@ function RegistrationForm() {
     if (!formData.birthDate) newErrors.birthDate = "Birth Date required";
     if (!formData.role) newErrors.role = "Position required";
 
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!])[\w@#$%^&+=!]{8,}$/;
     if (!formData.password) {
       newErrors.password = "Password required";
-    } else if (!checkPasswordStrength(formData.password)) {
+    } else if (!passwordRegex.test(formData.password)) {
       newErrors.password = "Password must include at least 8 characters, with uppercase, lowercase, a number, and a special character (@, #, $, %, ^, &, +, =, or !)";
     }
 
-    if (formData.password !== formData.confirmPassword) {
+
+    if (formData.password !== formData.confirmPassword)
       newErrors.confirmPassword = "Passwords do not match";
     }
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -87,8 +88,6 @@ function RegistrationForm() {
         } else {
           setErrors({ email: "An unexpected error occurred. Please try again later." });
         }
-      } finally {
-        setIsSubmitting(false);  // Reset submitting state
       }
     }
   };

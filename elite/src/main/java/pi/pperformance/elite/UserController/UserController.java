@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,7 +17,6 @@ import pi.pperformance.elite.entities.User;
 //import Cross-Origin Resource Sharing to ensure that spring API accepts requests from react app 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
-
 
 @CrossOrigin(origins = "http://localhost:3000") // Adjust the port if necessary
 @RestController
@@ -35,13 +35,9 @@ public class UserController {
 
         // Save the new user
         User savedUser = usrService.addUser(user);
-
         // Return success response
         return ResponseEntity.ok("Registration successful! Your account is pending approval by an admin.");
     }
-
-
-     
     @PostMapping("/confirm-employee")
     public ResponseEntity<?> confirmEmployee(@RequestParam String email) {
         try {
