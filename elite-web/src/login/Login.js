@@ -39,11 +39,8 @@ const Login = () => {
           sessionStorage.setItem("refreshToken", refreshToken);
         }
 
-<<<<<<< HEAD
         navigate("/ManagerInterface");
-=======
-        navigate("/dashboard"); // Redirection vers le tableau de bord
->>>>>>> f7ba0fb2a3383d67e97b83bd3ed772a2fdbd0872
+
       } else {
         setLoginMessage("Account not approved");
       }
