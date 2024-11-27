@@ -43,47 +43,48 @@ public class AuthController {
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
     
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
-        String email = loginRequest.get("email");
-        String password = loginRequest.get("password");
-        log.info("Authenticating user with email: {}", email);
+public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
+    String email = loginRequest.get("email");
+    String password = loginRequest.get("password");
+    log.info("Authenticating user with email: {}", email);
+    
+    try {
+        // Authenticate user
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
         
-        try {
-            // Authenticate user
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-            
-            // Load user details (which includes authorities/roles)
-            final UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-            
-            // Get authorities (roles) from UserDetails
-            Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
-            
-            // Fetch user entity from DB
-            User user = userServices.findByEmail(email);
-            
-            if (user == null || !user.getIsActive()) {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
-                    "message", "Account is inactive!",
-                    "errorCode", "AUTH002"
-                ));
-            }
-            
-            // Generate JWT tokens
-            final String accessToken = jwtUtil.generateToken(userDetails.getUsername(), authorities); // Use authorities
-            final String refreshToken = jwtUtil.generateRefreshToken(userDetails.getUsername(), authorities); // Use authorities
-            
-            return ResponseEntity.ok(Map.of(
-                "accessToken", accessToken,
-                "refreshToken", refreshToken,
-                "isActive", user.getIsActive(),
-                "roles", authorities.stream()
-                    .map(GrantedAuthority::getAuthority)
-                    .collect(Collectors.toList()) // Add roles to the response
+        // Load user details (which includes authorities/roles)
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        
+        // Get authorities (roles) from UserDetails
+        Collection<? extends GrantedAuthority> authorities = userDetails.getAuthorities();
+        
+        // Fetch user entity from DB
+        User user = userServices.findByEmail(email);
+        
+        if (user == null || !user.getIsActive()) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of(
+                "message", "Account is inactive!",
+                "errorCode", "AUTH002"
             ));
-        } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
         }
+        
+        // Generate JWT tokens
+        final String accessToken = jwtUtil.generateToken(userDetails.getUsername(), authorities); // Use authorities
+        final String refreshToken = jwtUtil.generateRefreshToken(userDetails.getUsername(), authorities); // Use authorities
+        
+        return ResponseEntity.ok(Map.of(
+            "accessToken", accessToken,
+            "refreshToken", refreshToken,
+            "isActive", user.getIsActive(),
+            "roles", authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toList()) // Add roles to the response
+        ));
+    } catch (AuthenticationException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
+}
+
     
 //maram
     @PostMapping("/refresh")

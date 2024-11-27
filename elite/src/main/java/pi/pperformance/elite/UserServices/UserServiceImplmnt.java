@@ -5,6 +5,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pi.pperformance.elite.UserRepository.UserRepository;
 import pi.pperformance.elite.entities.User;
+import pi.pperformance.elite.exceptions.AccountNotFoundException;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImplmnt implements UserServiceInterface {
@@ -15,6 +19,7 @@ public class UserServiceImplmnt implements UserServiceInterface {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
+    // Add a new user and hash the password before saving
     @Override
     public User addUser(User user) {
         // Hash the password before saving
@@ -23,34 +28,33 @@ public class UserServiceImplmnt implements UserServiceInterface {
 
         return UsrRepo.save(user);
     }
-    // cette fonction retourne liste de users
+
+    // Returns a list of all users
     @Override
-    public List<User> getAllUsers(){
-    	return UsrRepo.findAll()
-;    	
+    public List<User> getAllUsers() {
+        return UsrRepo.findAll();
     }
 
-    // retourne un user par id et si n'existe pas retourne null
+    // Returns a user by id, throws AccountNotFoundException if not found
     @Override
     public User getUserById(Long id) {
-        return UsrRepo.findById(id).orElse(null);
+        return UsrRepo.findById(id).orElseThrow(() -> new AccountNotFoundException("User with ID " + id + " not found"));
     }
+
+    // Returns a user by email. Throws AccountNotFoundException if not found.
     @Override
-
-
-public User getUserByEmail(String email) {
-    User user = UsrRepo.findByEmail(email);
-    if (user == null) {
-        throw new pi.pperformance.elite.exceptions.AccountNotFoundException("User with email " + email + " not found");
+    public User getUserByEmail(String email) {
+        User user = UsrRepo.findByEmail(email);
+        if (user == null) {
+            throw new AccountNotFoundException("User with email " + email + " not found");
+        }
+        return user;
     }
-    return user;
-}
 
-	
-    // cette fonction permet de modifier les infos de users si existe snn retourner null
-	@Override
+    // Updates a user's information if they exist; throws AccountNotFoundException if not found
+    @Override
     public User updateUser(Long id, User userDetails) {
-        Optional<User> optionalUser =  UsrRepo.findById(id);
+        Optional<User> optionalUser = UsrRepo.findById(id);
         if (optionalUser.isPresent()) {
             User user = optionalUser.get();
             user.setFirst_name(userDetails.getFirst_name());
@@ -58,25 +62,32 @@ public User getUserByEmail(String email) {
             user.setEmail(userDetails.getEmail());
             user.setBirthDate(userDetails.getBirthDate());
             user.setRole(userDetails.getRole());
-            user.setPassword(userDetails.getPassword());
-            return  UsrRepo.save(user);
-        }
-        return null;
-    }
-    
 
-    //cette methode cherché  le user par id a apres supprimer si existe snn affchier mssg 
-	@Override
+            // If password is being updated, encode it
+            if (userDetails.getPassword() != null && !userDetails.getPassword().isEmpty()) {
+                String encodedPassword = passwordEncoder.encode(userDetails.getPassword());
+                user.setPassword(encodedPassword);
+            }
+
+            return UsrRepo.save(user);
+        } else {
+            throw new AccountNotFoundException("User with ID " + id + " not found");
+        }
+    }
+
+    // Deletes a user by id; throws AccountNotFoundException if user doesn't exist
+    @Override
     public void deleteUser(Long id) {
         if (UsrRepo.existsById(id)) {
-        	UsrRepo.deleteById(id);
+            UsrRepo.deleteById(id);
         } else {
-            throw new IllegalArgumentException("User with ID " + id +  " does not exist");
+            throw new AccountNotFoundException("User with ID " + id + " does not exist");
         }
     }
 
+    // Finds a user by email, returns null if not found
+    @Override
     public User findByEmail(String email) {
         return UsrRepo.findByEmail(email);
     }
-
 }

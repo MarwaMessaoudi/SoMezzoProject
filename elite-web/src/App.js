@@ -6,14 +6,12 @@ import Login from "./login/Login";
 import ResetPass from "./login/ResetPass";
 import React, { useState, useEffect } from 'react';
 import LoginPage from './LoginPage';
-import EmployeeInterface from './Interface/Employee/employeeInterface';
-import UpdateEmp from './Interface/Employee/UpdateEmp';
-import ManagerInterface from "./Interface/Manager/managerInterface"; 
-import ProfilePage from "./Interface/Manager/users-profile"; 
-import UserTable from "./Interface/Manager/supprission_page"; 
-
-import UserList from "./Interface/Manager/supprission_page";
-import EditUserForm from "./Interface/Manager/EditUserForm";
+import UpdateEmp from './interface/Employee/UpdateEmp';
+import ManagerInterface from "./interface/Manager/managerInterface"; 
+import ProfilePage from "./interface/Manager/users-profile"; 
+import UserTable from "./interface/Manager/supprission_page"; 
+import UserList from "./interface/Manager/modification";
+import EditUserForm from "./interface/Manager/EditUserForm";
 import EmployeeInterface from './interface/Employee/employeeInterface';
 import Controller from './interface/controller/controller';
 import CompteValide from './valide/compteValide';
@@ -57,16 +55,16 @@ function App() {
         <Route path="/Registration" element={<RegistrationForm />} />
         <Route path="/confirmation" element={<ConfirmationPage />} />
         <Route path="/resetpassword" element={<ResetPass />} />
-        <Route path="/employeeinterface" element={<EmployeeInterface />} /> 
-        <Route path="/UpdateEmp" element={<UpdateEmp />} />
-        <Route path="/ManagerInterface" element={<ManagerInterface />} />
-      <Route path="/users-profile" element={<ProfilePage />} />
-      <Route path="/UserTable" element={<UserTable />} />       /* supprission*/
-      <Route path="/users" element={<UserList />} />    /* modification*/
-      <Route path="/edit-user/:id" element={<EditUserForm />} /> /*formulaire_modification*/
+        <Route path="/employeeinterface" element={<EmployeeInterface onLogout={onLogout}/>} /> 
+        <Route path="/UpdateEmp" element={<UpdateEmp onLogout={onLogout} />} />
+        <Route path="/ManagerInterface" element={<ManagerInterface onLogout={onLogout}/>} />
+        <Route path="/users-profile" element={<ProfilePage onLogout={onLogout}/>} />
+        <Route path="/UserTable" element={<UserTable onLogout={onLogout}/>} />       /* supprission*/
+        <Route path="/users" element={<UserList onLogout={onLogout}/>} />    /* modification*/
+        <Route path="/edit-user/:id" element={<EditUserForm onLogout={onLogout}/>} /> /*formulaire_modification*/
         <Route path="/employeeinterface" element={<EmployeeInterface onLogout={onLogout} />} />
         <Route path="/controller" element={<Controller onLogout={onLogout}/>} />
-        <Route path='/validate' element={<CompteValide />} />
+        <Route path='/validate' element={<CompteValide onLogout={onLogout}/>} />
       </Routes>
     </Router>
   );

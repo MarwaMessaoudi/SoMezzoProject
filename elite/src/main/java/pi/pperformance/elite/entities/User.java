@@ -33,8 +33,7 @@ private String first_name;
 private String last_name;
 private String email;
 private LocalDate birthDate;
-private String password;
-private Date birthDate;
+
 
 @Enumerated(EnumType.STRING)
 private Role role;

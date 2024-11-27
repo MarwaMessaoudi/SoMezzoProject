@@ -66,7 +66,7 @@ function RegistrationForm() {
         });
         console.log(formData.role);
         if (response.status === 200) {
-          navigate("/ManagerInterface");
+          navigate("/confirmation");
         }
       } catch (error) {
         console.error("Error registering user:", error);
