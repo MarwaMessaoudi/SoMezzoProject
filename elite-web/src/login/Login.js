@@ -41,7 +41,6 @@ const Login = () => {
 
         navigate("/ManagerInterface");
 
-       
       } else {
         setLoginMessage("Account not approved");
       }

@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import pi.pperformance.elite.Authentif.JwtUtils;
-
 import org.springframework.web.bind.annotation.*;
 import pi.pperformance.elite.UserServices.UserServiceInterface;
 import pi.pperformance.elite.entities.User;
@@ -36,14 +35,9 @@ public class UserController {
 
         // Save the new user
         User savedUser = usrService.addUser(user);
-
-
         // Return success response
         return ResponseEntity.ok("Registration successful! Your account is pending approval by an admin.");
     }
-
-  
-
     @PostMapping("/confirm-employee")
     public ResponseEntity<?> confirmEmployee(@RequestParam String email) {
         try {
