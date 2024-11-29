@@ -1,5 +1,4 @@
 package pi.pperformance.elite.Authentif;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Jwts;
@@ -7,10 +6,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import pi.pperformance.elite.entities.Role;
-
 import javax.crypto.SecretKey;
-
-import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -26,7 +22,6 @@ public class JwtUtils {
      * It’s a method to mix the secret key with the data inside the token to create a secure signature. This signature is then used to ensure the token hasn’t been changed by anyone else.*/
     private static final SecretKey SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256); // Ensure a strong dynamic 256-bit key 
 
-    
     // Extract a claim from the token
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);

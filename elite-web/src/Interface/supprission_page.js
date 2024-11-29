@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
+import "./supprission.css";
 
-const INACTIVITY_TIMEOUT = 5 * 60 * 1000; // 5 minutes
+const INACTIVITY_TIMEOUT = 30 * 60 * 1000; // 5 minutes
 
 const UserTable = ({ onLogout }) => {
   const navigate = useNavigate();
@@ -48,7 +49,6 @@ const UserTable = ({ onLogout }) => {
     }
   };
 
-  // Monitor session expiration and token expiry on component mount
   useEffect(() => {
     handleTokenExpiry();
   }, []); // Runs once when the component is mounted
@@ -82,57 +82,113 @@ const UserTable = ({ onLogout }) => {
     };
   }, [onLogout, navigate]);
 
-  //-------------------- Fetch Users Logic --------------------//
+  //-------------------- Load Users -----------------------//
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/api/users/")
-      .then((response) => setUsers(response.data))
-      .catch((error) => console.error("Error loading users:", error));
-  }, []);
+    if (!sessionExpired) {
+      axios
+        .get("http://localhost:8084/Users/alluser")
+        .then((response) => setUsers(response.data))
+        .catch((error) => console.error("Error loading users:", error));
+    }
+  }, [sessionExpired]); // Reload users only when session is active
 
-  //-------------------- Handle Edit Click --------------------//
-  const handleEditClick = (id) => {
-    navigate(`/edit/${id}`); // Redirect with the user ID
+  //-------------------- Delete User -----------------------//
+  const deleteUser = (id) => {
+    const token = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
+  
+    if (!token) {
+      alert("You need to be logged in to delete a user.");
+      navigate("/sign-in");
+      return;
+    }
+  
+    if (window.confirm("Are you sure you want to delete this user?")) {
+      axios
+        .delete(`http://localhost:8084/Users/delete/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then(() => {
+          setUsers((prevUsers) => prevUsers.filter((user) => user.id !== id));
+        })
+        .catch((error) => {
+          console.error("Error deleting:", error);
+          alert("Failed to delete the user. Please try again later.");
+        });
+    }
   };
-
-  //-------------------- Render Based on Session Expiry -----------------------//
+  
+  //-------------------- Render -----------------------//
   if (sessionExpired) {
     return null; // No UI is rendered if the session is expired
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
   return (
     <div>
-      <h2>User List</h2>
-      <table border="1" style={{ width: "100%", textAlign: "left" }}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>First name</th>
-            <th>Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Active</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((user) => (
-            <tr key={user.id}>
-              <td>{user.id}</td>
-              <td>{user.first_name}</td>
-              <td>{user.last_name}</td>
-              <td>{user.email}</td>
-              <td>{user.role}</td>
-              <td>{user.isActive ? "Yes" : "No"}</td>
-              <td>
-                <button onClick={() => handleEditClick(user.id)}>Edit</button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+        <h2>User List</h2>
+        <table border="1" style={{ width: "100%", textAlign: "left" }}>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>First name</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Actif</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {users.map(user => (
+                    <tr key={user.id}>
+                        <td>{user.id}</td>
+                        <td>{user.first_name}</td>
+                        <td>{user.last_name}</td>
+                        <td>{user.email}</td>
+                        <td>{user.role}</td>
+                        <td>{user.isActive ? "Yes" : "No"}</td>
+                        <td>
+                            <button onClick={() => deleteUser(user.id)}>Delete</button>
+                        </td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
     </div>
-  );
+);
 };
 
 export default UserTable;
+

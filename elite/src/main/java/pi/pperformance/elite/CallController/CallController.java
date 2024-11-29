@@ -1,0 +1,43 @@
+package pi.pperformance.elite.CallController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
+import pi.pperformance.elite.CallServices.CallService;
+import pi.pperformance.elite.entities.Appel;
+import java.util.List;
+
+@RestController
+@RequestMapping("/calls")
+public class CallController {
+    private final CallService callService;
+
+    public CallController(CallService callService) {
+        this.callService = callService;
+    }
+    
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @PostMapping("/add")
+    public ResponseEntity<Appel> addCall(@RequestBody Appel call) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(callService.addCall(call));
+    }
+    
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @GetMapping("/getcalls")
+    public ResponseEntity<List<Appel>> getAllCalls() {
+        return ResponseEntity.ok(callService.getAllCalls());
+    }
+    
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @GetMapping("/getbyid/{id}")
+    public ResponseEntity<Appel> getCallById(@PathVariable Long id) {
+        return ResponseEntity.ok(callService.getCallById(id));
+    }
+    
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @DeleteMapping("/delete{id}")
+    public ResponseEntity<Void> deleteCall(@PathVariable Long id) {
+        callService.deleteCall(id);
+        return ResponseEntity.noContent().build();
+    }
+}

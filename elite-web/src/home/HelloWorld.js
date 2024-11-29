@@ -5,7 +5,8 @@ function Homepage() {
   const navigate = useNavigate(); // Initialize the navigate function
 
   const handleGetStarted = () => {
-    navigate("/sign-in "); // Navigate to the login route
+    navigate("/sign-in ");
+     // Navigate to the login route
   };
 
   return (

@@ -1,4 +1,5 @@
 package pi.pperformance.elite.Authentif;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -7,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -34,9 +34,20 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String email = null;
         String jwtToken = null;
 
+        // Log the authorization header for debugging
+        System.out.println("Authorization Header: " + authorizationHeader);
+
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             jwtToken = authorizationHeader.substring(7);
-            email = jwtUtil.extractEmail(jwtToken);
+
+            // Extract email from token and validate it
+            try {
+                email = jwtUtil.extractEmail(jwtToken);
+                System.out.println("Extracted Email: " + email);
+                System.out.println("Roles in Token: " + jwtUtil.getRolesFromToken(jwtToken));
+            } catch (Exception e) {
+                System.err.println("Error extracting email or roles from token: " + e.getMessage());
+            }
         }
 
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -47,22 +58,12 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                // Gestion du délai d'inactivité
-                Object details = SecurityContextHolder.getContext().getAuthentication() != null
-                    ? SecurityContextHolder.getContext().getAuthentication().getDetails() : null;
-
-                Long lastActivityTime = details instanceof Long ? (Long) details : null;
-
-                if (lastActivityTime != null && (System.currentTimeMillis() - lastActivityTime > INACTIVITY_TIMEOUT)) {
-                    SecurityContextHolder.clearContext();
-                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                    response.getWriter().write("{\"message\":\"Session expired\"}");
-                    response.getWriter().flush();
-                    return;
-                }
-
-                authToken.setDetails(System.currentTimeMillis());
                 SecurityContextHolder.getContext().setAuthentication(authToken);
+
+                // Log authentication success
+                System.out.println("User authenticated: " + email);
+            } else {
+                System.err.println("Invalid token for email: " + email);
             }
         }
 

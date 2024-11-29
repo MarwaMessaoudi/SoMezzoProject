@@ -21,8 +21,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails; 
 
 
-
-
 @Entity
 public class User implements Serializable, UserDetails {
 

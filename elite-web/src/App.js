@@ -5,38 +5,20 @@ import Homepage from "./home/HelloWorld";
 import Login from "./login/Login";
 import ResetPass from "./login/ResetPass";
 import React, { useState, useEffect } from 'react';
-import LoginPage from './LoginPage';
-import UpdateEmp from './interface/Employee/UpdateEmp';
-import ManagerInterface from "./interface/Manager/managerInterface"; 
-import ProfilePage from "./interface/Manager/users-profile"; 
-import UserTable from "./interface/Manager/supprission_page"; 
-import UserList from "./interface/Manager/modification";
-import EditUserForm from "./interface/Manager/EditUserForm";
-import EmployeeInterface from './interface/Employee/employeeInterface';
-import Controller from './interface/controller/controller';
-import CompteValide from './valide/compteValide';
-import { jwtDecode } from 'jwt-decode';
+import CompteValide from "./Interface/Tovalidate"; // Import AddForm here
+import UserTable from "./Interface/supprission_page";
+import UserList from "./Interface/modification";
+import EditUserForm from "./Interface/EditUserForm";
+import Dashboard from "./Interface/dashboard";
+import AddForm from "./Interface/AddForm"; // Import AddForm here
+import AddCall from "./Interface/CRUD calls/add_call"; // Assurez-vous que le chemin est correct
 
-/*const ProtectedRoute = ({ element }) => {
-  const token = localStorage.getItem("access_token") || sessionStorage.getItem("access_token");
-  let isAuthenticated = false;
 
-  if (token) {
-    try {
-      const decodedToken = jwtDecode(token);
-      console.log(decodedToken);
-      const expirationTime = decodedToken.exp * 1000; // Token expiry time in milliseconds
-      if (expirationTime >= Date.now()) {
-        isAuthenticated = true;
-      }
-    } catch (error) {
-      console.error("Token error", error);
-      isAuthenticated = false;
-    }
-  }
+import CallsList from "./Interface/CRUD calls/calls_list"
 
-  return isAuthenticated ? element : <Navigate to="/sign-in" />;
-};*/
+
+//import ProtectedLayout from "./utils/ProtectedLayout";
+
 const onLogout = () => {
   // Clear tokens from localStorage and sessionStorage
   localStorage.removeItem("accessToken");
@@ -44,7 +26,7 @@ const onLogout = () => {
   sessionStorage.removeItem("accessToken");
   sessionStorage.removeItem("refreshToken");
 };
-
+//<Route path="/ManagerInterface" element={<ProtectedLayout requiredRole="ROLE_EMPLOYEE"><ManagerInterface/></ProtectedLayout>}
 
 function App() {
   return (
@@ -55,17 +37,20 @@ function App() {
         <Route path="/Registration" element={<RegistrationForm />} />
         <Route path="/confirmation" element={<ConfirmationPage />} />
         <Route path="/resetpassword" element={<ResetPass />} />
-        <Route path="/employeeinterface" element={<EmployeeInterface onLogout={onLogout}/>} /> 
-        <Route path="/UpdateEmp" element={<UpdateEmp onLogout={onLogout} />} />
-        <Route path="/ManagerInterface" element={<ManagerInterface onLogout={onLogout}/>} />
-        <Route path="/users-profile" element={<ProfilePage onLogout={onLogout}/>} />
-        <Route path="/UserTable" element={<UserTable onLogout={onLogout}/>} />       /* supprission*/
-        <Route path="/users" element={<UserList onLogout={onLogout}/>} />    /* modification*/
-        <Route path="/edit-user/:id" element={<EditUserForm onLogout={onLogout}/>} /> /*formulaire_modification*/
-        <Route path="/employeeinterface" element={<EmployeeInterface onLogout={onLogout} />} />
-        <Route path="/controller" element={<Controller onLogout={onLogout}/>} />
-        <Route path='/validate' element={<CompteValide onLogout={onLogout}/>} />
-      </Routes>
+        <Route path='/dashboard' element={<Dashboard onLogout={onLogout}/>} />
+        <Route path="/edit-user/:id" element={<EditUserForm />} />
+        <Route path="/validate" element={<CompteValide onLogout={onLogout} />} />
+        <Route path="/Dashboard" element={<Dashboard onLogout={onLogout} />} />
+        <Route path="/add" element={<AddForm />} /> {/* Add route for AddForm */}
+        <Route path="/Tovalidate" element={<CompteValide onLogout={onLogout} />} />
+        <Route path="/UserTable" element={<UserTable />} />
+        <Route path="/users" element={<UserList />} />
+        <Route path="/add-call" element={<AddCall />} />
+
+        <Route path="/call_list" element={<CallsList />} />
+
+
+        </Routes>
     </Router>
   );
 }

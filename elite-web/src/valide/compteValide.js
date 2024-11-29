@@ -33,7 +33,7 @@ const CompteValide = () => {
         {/* User profile section in the header */}
         <div className="app-header-actions">
           <button className="user-profile">
-            <span>Matheo Peterson</span> {/* User name */}
+            <span>ghada chelli</span> {/* User name */}
             <img src="https://assets.codepen.io/285131/almeria-avatar.jpeg" alt="User Avatar" /> {/* User avatar */}
           </button>
         </div>

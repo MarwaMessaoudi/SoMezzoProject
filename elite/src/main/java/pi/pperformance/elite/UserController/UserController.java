@@ -2,6 +2,9 @@ package pi.pperformance.elite.UserController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -32,18 +35,23 @@ public class UserController {
 
     // Add function that allows us to add a user to the database
     @PostMapping("/add")
-    public ResponseEntity<String> AddUser(@RequestBody User user) {
-        User savedUser = usrService.addUser(user);  
+    public ResponseEntity<String> addUser(@RequestBody User user) {
+        // Check if email already exists
+        if (usrService.findByEmail(user.getEmail()) != null) {
+            return ResponseEntity.badRequest().body("Email already exists.");
+        }
+
+        // Save the new user
+        User savedUser = usrService.addUser(user);
 
         // Create authorities list with the user's role
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(user.getRole().name()));  // Convert role to authority
 
-        // Generate the token with authorities
-        String token = jwtUtils.generateToken(savedUser.getEmail(), authorities);  // Pass authorities for token generation
-
-        return ResponseEntity.ok("Token : " + token);
+        // Return success response with the token
+        return ResponseEntity.ok("Registration successful! Your account is pending approval by an admin. " );
     }
+
 
     // Get all users
     @GetMapping("/alluser")
@@ -89,7 +97,7 @@ public class UserController {
         User updatedUser = usrService.updateUser(id, userDetails);
         return ResponseEntity.ok(updatedUser);
     }
-
+     
     // Delete user by ID
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable Long id) {
@@ -97,7 +105,8 @@ public class UserController {
         return ResponseEntity.ok("User with ID " + id + " deleted successfully.");
     }
 
-    // Find user by email
+    //
+   // Find user by email
     @GetMapping("/findByEmail/{email}")
     public ResponseEntity<User> findByEmail(@PathVariable String email) {
         User user = usrService.findByEmail(email);
@@ -107,4 +116,16 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+    
+ // In UserController.java
+    @GetMapping("/inactiveusers")
+    public ResponseEntity<List<User>> getInactiveUsers() {
+        List<User> inactiveUsers = usrService.getUsersByInactiveStatus();
+        if (inactiveUsers.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).body(inactiveUsers); // No inactive users found
+        } else {
+            return ResponseEntity.ok(inactiveUsers);  // Return inactive users
+        }
+    }
+
 }

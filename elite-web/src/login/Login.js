@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./login.module.css";
-import apiClient from "../utils/apiClient"; // Utiliser le client API centralisé
+import apiClient from "../utils/apiClient";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -15,52 +15,53 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true);
+    setLoginMessage("");
 
+    // Vérification des champs vides
     if (!email || !password) {
-      setLoginMessage("Please insert your email and password");
+      setLoginMessage("Please insert your email and password.");
       setLoading(false);
       return;
     }
 
     try {
       const response = await apiClient.post("/auth/login", { email, password });
-      const { accessToken, refreshToken, isActive, roles } = response.data; // Get roles from the response
-      console.log(response.data); 
+      const { accessToken, refreshToken, isActive, roles, user } = response.data;
+
+      console.log("Login response data:", response.data); // Debug log
+
+      // Vérification si le compte est actif
       if (isActive) {
         setLoginMessage("Login successful!");
 
-        // Save tokens to localStorage/sessionStorage
-        if (rememberMe) {
-          localStorage.setItem("accessToken", accessToken);
-          localStorage.setItem("refreshToken", refreshToken);
-        } else {
-          sessionStorage.setItem("accessToken", accessToken);
-          sessionStorage.setItem("refreshToken", refreshToken);
-        }
-        // Save roles to localStorage/sessionStorage
-        localStorage.setItem("roles", JSON.stringify(roles));
+        // Sauvegarde des tokens et informations utilisateur
+        const storage = rememberMe ? localStorage : sessionStorage;
+        storage.setItem("accessToken", accessToken);
+        storage.setItem("refreshToken", refreshToken);
+        storage.setItem("roles", JSON.stringify(roles));
+        storage.setItem("user", JSON.stringify(user));
 
-        // Redirect based on roles
-        if (roles && roles.includes('ROLE_CONTROLLER')) {
-          navigate("/controller"); // Redirect to controller dashboard
-        } else if (roles && roles.includes('ROLE_MANAGER')) {
-          navigate("/user-dashboard"); // Redirect to Manager dashboard
-        } else if (roles && roles.includes('ROLE_EMPLOYEE')) {
-          navigate("/employeeinterface"); // Redirect to employee interface
-        } else {
-          navigate("/"); // Default redirect if no specific role is found
-        }
-        
-        console.log("Navigating to the correct dashboard based on role");
+        console.log("Tokens and user data saved to storage."); // Debug log
+
+        // Redirection vers le tableau de bord
+        navigate("/dashboard");
       } else {
-        setLoginMessage("Account not approved");
+        setLoginMessage("Account not approved. Please contact the administrator.");
       }
     } catch (error) {
+      console.error("Login error:", error.response || error.message); // Debug log
+
       if (error.response) {
-        setLoginMessage(error.response.data.message || "Login failed!");
+        setLoginMessage(error.response.data.message || "Login failed. Please check your credentials.");
       } else {
-        setLoginMessage(error.message);
+        setLoginMessage("Unable to connect to the server. Please try again later.");
       }
+
+      // Nettoyage des données sensibles
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      sessionStorage.removeItem("accessToken");
+      sessionStorage.removeItem("refreshToken");
     } finally {
       setLoading(false);
     }
@@ -80,6 +81,7 @@ const Login = () => {
                 type="email"
                 className={styles.formcontrol}
                 placeholder="Enter email"
+                required
               />
             </div>
 
@@ -91,6 +93,7 @@ const Login = () => {
                 type="password"
                 className={styles.formcontrol}
                 placeholder="Enter password"
+                required
               />
             </div>
 
@@ -111,7 +114,7 @@ const Login = () => {
               </button>
             </div>
 
-            {loginMessage && <p>{loginMessage}</p>}
+            {loginMessage && <p style={{ color: loginMessage.includes("successful") ? "green" : "red" }}>{loginMessage}</p>}
 
             <p className={styles.forgotpassword}>
               Forgot <Link to="/resetpassword">password?</Link>

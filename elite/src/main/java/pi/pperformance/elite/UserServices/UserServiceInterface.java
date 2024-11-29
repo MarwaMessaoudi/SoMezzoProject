@@ -14,4 +14,5 @@ public interface UserServiceInterface{
     public User getUserByEmail(String email);
     public User getUserById(Long id);
     public User findByEmail(String email);
+    public List<User>getUsersByInactiveStatus();
 }

@@ -26,8 +26,6 @@ import pi.pperformance.elite.entities.User;
 @RequestMapping("/auth")
 public class AuthController {
 
-
-
     @Autowired
     private AuthenticationManager authenticationManager;
 
@@ -43,7 +41,7 @@ public class AuthController {
     private static final Logger log = LoggerFactory.getLogger(AuthController.class);
     
     @PostMapping("/login")
-public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
+    public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
     String email = loginRequest.get("email");
     String password = loginRequest.get("password");
     log.info("Authenticating user with email: {}", email);
@@ -78,7 +76,9 @@ public ResponseEntity<?> login(@RequestBody Map<String, String> loginRequest) {
             "isActive", user.getIsActive(),
             "roles", authorities.stream()
                 .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.toList()) // Add roles to the response
+                .collect(Collectors.toList()), // Add roles to the response
+             "user", user // Send user data as part of the response
+
         ));
     } catch (AuthenticationException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());

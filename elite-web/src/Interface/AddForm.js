@@ -1,17 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import './registration.css';  // Ensure that you have a proper import for your CSS
-import axios from "axios";
+import axios from "axios"; // Import Axios for HTTP requests
 
-// Password strength validation helper function
-const checkPasswordStrength = (password) => {
-  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@#$%^&+=!])[\w@#$%^&+=!]{8,}$/;
-  return passwordRegex.test(password);
-};
+// Declaration of the AddForm component
+function AddForm() {
+  const navigate = useNavigate();  // Hook for navigation
 
-function RegistrationForm() {
-  const navigate = useNavigate();
-
+  // State to store form data
   const [formData, setFormData] = useState({
     first_name: "",
     last_name: "",
@@ -22,51 +17,42 @@ function RegistrationForm() {
     confirmPassword: ""
   });
 
+  // State to store form validation errors
   const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);  // To manage loading state
-  const [passwordStrength, setPasswordStrength] = useState("");  // To show password strength feedback
 
+  // Handle input field changes
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-
-    // Check password strength if password is being typed
-    if (name === "password") {
-      if (checkPasswordStrength(value)) {
-        setPasswordStrength("Strong");
-      } else {
-        setPasswordStrength("Weak");
-      }
-    }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Form validation
   const validateForm = () => {
     const newErrors = {};
-
     if (!formData.first_name) newErrors.first_name = "First Name required";
     if (!formData.last_name) newErrors.last_name = "Last Name required";
     if (!formData.email) newErrors.email = "Email required";
     if (!formData.birthDate) newErrors.birthDate = "Birth Date required";
     if (!formData.role) newErrors.role = "Position required";
-
-    if (!formData.password) {
-      newErrors.password = "Password required";
-    } else if (!checkPasswordStrength(formData.password)) {
-      newErrors.password = "Password must include at least 8 characters, with uppercase, lowercase, a number, and a special character (@, #, $, %, ^, &, +, =, or !)";
-    }
-
-    if (formData.password !== formData.confirmPassword) {
+    if (!formData.password) newErrors.password = "Password required";
+    if (formData.password !== formData.confirmPassword)
       newErrors.confirmPassword = "Passwords do not match";
-    }
-
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
+  // Form submission handler
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent page reload on form submission
     if (validateForm()) {
-      setIsSubmitting(true);  // Set submitting to true when request starts
+      const token = localStorage.getItem("accessToken") || sessionStorage.getItem("accessToken");
+  
+      if (!token) {
+        alert("You need to be logged in to add a user.");
+        navigate("/sign-in");
+        return;
+      }
+  
       try {
         const response = await axios.post("http://localhost:8084/Users/add", {
           first_name: formData.first_name,
@@ -75,30 +61,40 @@ function RegistrationForm() {
           birthDate: formData.birthDate,
           role: formData.role,
           password: formData.password
+        }, {
+          headers: {
+            Authorization: `Bearer ${token}`, // Include the token in the request headers
+          },
         });
-
+  
         if (response.status === 200) {
-          navigate("/confirmation");
+          navigate("/confirmation");  // Redirect on success
         }
       } catch (error) {
-        console.error("Error registering user:", error);
+        console.error("Error adding user:", error);
+  
         if (error.response && error.response.status === 400) {
-          setErrors({ email: error.response.data });
+          // Specific error handling for duplicate email
+          if (error.response.data === "Email already exists.") {
+            alert("The email address you provided is already registered. Please use a different email.");
+          } else {
+            alert("Failed to add the user due to a bad request. Please try again.");
+          }
         } else {
-          setErrors({ email: "An unexpected error occurred. Please try again later." });
+          alert("Failed to add the user. Please try again later.");
         }
-      } finally {
-        setIsSubmitting(false);  // Reset submitting state
       }
     }
   };
+  
 
   return (
     <div className="registration-form">
-      <h2 className="form-title">Sign up</h2>
+      <h2 className="form-title">Add User</h2>
       <form onSubmit={handleSubmit}>
+        {/* Same input fields as the registration form */}
         <div>
-          <label>First Name:</label>
+          <label>First Name :</label>
           <input
             type="text"
             name="first_name"
@@ -120,7 +116,7 @@ function RegistrationForm() {
         </div>
 
         <div>
-          <label>Email:</label>
+          <label>Email :</label>
           <input
             type="email"
             name="email"
@@ -148,7 +144,7 @@ function RegistrationForm() {
             value={formData.role}
             onChange={handleChange}
           >
-            <option value="">Select your post</option>
+            <option value="">Select Position</option>
             <option value="EMPLOYEE">Employee</option>
             <option value="CONTROLLER">Controller</option>
           </select>
@@ -164,11 +160,6 @@ function RegistrationForm() {
             onChange={handleChange}
           />
           {errors.password && <p className="error">{errors.password}</p>}
-          {passwordStrength && (
-            <p className={`password-strength ${passwordStrength.toLowerCase()}`}>
-              Password Strength: {passwordStrength}
-            </p>
-          )}
         </div>
 
         <div>
@@ -182,12 +173,10 @@ function RegistrationForm() {
           {errors.confirmPassword && <p className="error">{errors.confirmPassword}</p>}
         </div>
 
-        <button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? "Registering..." : "Register"}
-        </button>
+        <button type="submit">Add User</button>
       </form>
     </div>
   );
 }
 
-export default RegistrationForm;
+export default AddForm;

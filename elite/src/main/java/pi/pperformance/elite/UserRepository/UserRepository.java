@@ -1,5 +1,7 @@
 package pi.pperformance.elite.UserRepository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 import pi.pperformance.elite.entities.User;
@@ -9,6 +11,6 @@ import pi.pperformance.elite.entities.User;
 //please make sure to name the entity "User" so the code recognize it and most of the red underlined User will be gone
 public interface UserRepository extends JpaRepository<User, Long> {
     User findByEmail(String email);
-
+    List<User> findByIsActiveFalse();  // Method to find users with isActive = false
 
 }

@@ -1,5 +1,6 @@
 package com.example.projetintegration.models;
 
+
 public class User {
     private String first_name;
     private String last_name;

@@ -90,4 +90,9 @@ public class UserServiceImplmnt implements UserServiceInterface {
     public User findByEmail(String email) {
         return UsrRepo.findByEmail(email);
     }
+    
+    public List<User> getUsersByInactiveStatus() {
+        return UsrRepo.findByIsActiveFalse();  // Assuming there's a method in the repository
+    }
+    
 }
